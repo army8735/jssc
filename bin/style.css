@@ -1,0 +1,97 @@
+body {
+	font-size: 10pt;
+	background-color: #fff;
+}
+.jssc .num {
+	color: #088;
+}
+.jssc .keyword {
+	color: #33f;
+}
+.jssc .comment {
+	color: #393;
+}
+.jssc .string {
+	color: #a33;
+}
+.jssc .reg, .annot, .head {
+	color: #999;
+}
+.jssc .val, .attr {
+	color: #909;
+}
+.jssc .cdata {
+	color: #c96;
+}
+.jssc .namespace {
+	color: #f00;
+}
+.jssc .java .keyword {
+	color:#909;
+}
+
+.jssc {
+	position: relative;
+	font-family: "ËÎÌו";
+	font-size: 10pt;
+}
+.jssc p {
+	margin: 5px 0;
+	color: #79a;
+	text-indent: 2em;
+	font-weight: 700;
+	font-family: "Verdana","ËÎÌו";
+}
+.jssc .error {
+	color: #f33;
+}
+.jssc .copy {
+	position: absolute;
+	top: 5px;
+	right: 5em;
+	cursor: pointer;
+	color: #39f;
+}
+.jssc .copy embed {
+	position: relative;
+	top: 1px;
+	width: 24px;
+	height:12px;
+}
+.jssc .about {
+	position: absolute;
+	top: 5px;
+	right: 2em;
+	cursor: pointer;
+	color: #f33;
+}
+.jssc ol li.actived {
+	background-color: #ff9;
+}
+.jssc ol {
+	margin: 0;
+	padding: 0;
+	overflow: auto;
+	border: 1px solid #ccc;
+	background-color: #eee;
+}
+.jssc ol li {
+	margin: 0;
+	padding-left: 10px;
+	border-left: 1px solid #abc;
+	background-color: #fff;
+	color: #333;
+}
+.jssc ol li .error {
+	background-color: #f33;
+}
+.jssc ol .fold {
+	background: #eee;
+}
+.jssc ol .fold:after {
+	content: "...";
+}
+.jssc ol .hide {
+	position: absolute;
+	visibility: hidden;
+}
