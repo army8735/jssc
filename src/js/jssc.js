@@ -1,10 +1,10 @@
 /**
  * ...
  * @author army8735
- * @version 5.0 build 20100305
+ * @version 5.0 build 20101223
  */
 
-function(id, url, css, js, swf) {
+function(id, url, css, js, swf, lang) {
 	var isIE = (navigator.appName.indexOf("Microsoft") != -1);
 	var index = 0;
 	var aList = [];
@@ -61,7 +61,7 @@ function(id, url, css, js, swf) {
 		}
 	}
 	function copyOk() {
-		alert("已复制到剪贴板中！");
+		alert(lang[2]);
 	}
 	function hasClass(node, name) {
 		return node.className.indexOf(name) != -1;
@@ -97,10 +97,16 @@ function(id, url, css, js, swf) {
 				return;
 			}
 			//取得所有符合规则的pre节点依次解析
-			var aPre = document.getElementsByTagName("pre");
+			var aPre = document.getElementsByTagName("pre"),
+				aTextaera = document.getElementsByTagName("textarea");
 			for(var i = 0, length = aPre.length; i < length; i++) {
 				if(aPre[i].style.display != "none" && aPre[i].className.indexOf(id) > -1) {
 					aList.push(aPre[i]);
+				}
+			}
+			for(var i = 0, length = aTextaera.length; i < length; i++) {
+				if(aTextaera[i].style.display != "none" && aTextaera[i].className.indexOf(id) > -1) {
+					aList.push(aTextaera[i]);
 				}
 			}
 			this.parseNext();
@@ -117,13 +123,13 @@ function(id, url, css, js, swf) {
 			addClass(oDiv, newClass);
 
 			var oTitle = $("p");
-			oTitle.innerHTML = syntax + " 代码";
+			oTitle.innerHTML = syntax + " " + lang[0];
 			oDiv.appendChild(oTitle);
 
 			var oCopy = $("div");
 			oCopy.className = "copy";
 			if(window.clipboardData && window.clipboardData.setData) {
-				oCopy.innerHTML = "复制";
+				oCopy.innerHTML = lang[1];
 				oCopy.onclick = function() {
 					if(window.clipboardData.setData("text", getText(oDiv.nextSibling))) {
 						copyOk();
@@ -131,16 +137,15 @@ function(id, url, css, js, swf) {
 				}
 			}
 			else {
-				oCopy.innerHTML = "<object data=\"" + url + "\" width=\"24\" height=\"12\" type=\"application/x-shockwave-flash\"><param name=\"wmode\" values=\"transparent\"/><param name=\"flashvars\" value=\"copy=" + index + "\"/></object>";
+				oCopy.innerHTML = "<object data=\"" + url + "\" type=\"application/x-shockwave-flash\"><param name=\"wmode\" values=\"transparent\"/><param name=\"allowScriptAccess\" value=\"always\"/><param name=\"flashvars\" value=\"copy=" + index + "&lang=" + lang[1] + "\"/></object>";
 			}
 			oDiv.appendChild(oCopy);
 
-			var oAbout = $("div");
+			var oAbout = $("a");
 			oAbout.className = "about";
-			oAbout.innerHTML = "关于";
-			oAbout.onclick = function() {
-				window.alert("Project: JSSC ver5.0\nUrl: http://code.google.com/p/jssc/\nLicense: GNU Lesser General Public License");
-			}
+			oAbout.innerHTML = lang[3];
+			oAbout.href = "http://code.google.com/p/jssc/";
+			oAbout.target = "_blank"
 			oDiv.appendChild(oAbout);
 
 			var oOl = $("ol");
@@ -190,7 +195,7 @@ function(id, url, css, js, swf) {
 			}, 0);
 		},
 		copy: function(count) {
-			copyOk();
+			setTimeout(copyOk, 100);
 			return getText(aList[count-1]);
 		}
 	};

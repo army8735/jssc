@@ -2,13 +2,14 @@
 	/**
 	 * ...
 	 * @author army8735
-	 * @version 5.0 rc build 20100305
+	 * @version 5.0 build 20101223
 	 * @link http://code.google.com/p/jssc/
 	 */
 	import flash.display.*;
 	import flash.events.*;
 	import flash.external.*;
 	import flash.system.*;
+	import flash.text.*;
 	import js.*;
 	import util.*;
 	import lexer.*;
@@ -25,11 +26,13 @@
 		private var css:String;
 		private var jsVar:String;
 		private var swf:String;
+		private var lang:String;
 		
 		public function Main():void {
 			Security.allowDomain("*");
 			var params:Object = root.loaderInfo.parameters;
 			jsVar = params.js || "jssc";
+			lang = params.lang || "english";
 			//作为copy功能
 			if (params.copy !== undefined) {
 				//舞台不缩放，左上角对齐并禁用右键菜单
@@ -51,13 +54,13 @@
 		private function initEI():void {
 			if (ExternalInterface.available) {
 				ExternalInterface.addCallback("parse", onParseHandler);
-				ExternalInterface.call(CallJs.INIT, find, url, css, jsVar, swf);
+				ExternalInterface.call(CallJs.INIT, find, url, css, jsVar, swf, I18n.getLanguage(lang));
 				ExternalInterface.call(jsVar + ".exec");
 			}
 		}
 		private function initCopy(id:int):void {
-			addChild(new CopyToClipboard());
-			buttonMode = true;
+			var tf:TextField = getChildAt(0) as TextField;
+			tf.text = lang;
 			addEventListener(MouseEvent.CLICK, function() {
 				if (ExternalInterface.available) {
 					var s:String = ExternalInterface.call(jsVar + ".copy", id);
