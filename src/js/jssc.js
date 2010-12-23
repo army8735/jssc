@@ -137,16 +137,9 @@ function(id, url, css, js, swf, lang) {
 				}
 			}
 			else {
-				oCopy.innerHTML = "<object data=\"" + url + "\" type=\"application/x-shockwave-flash\"><param name=\"wmode\" values=\"transparent\"/><param name=\"allowScriptAccess\" value=\"always\"/><param name=\"flashvars\" value=\"copy=" + index + "&lang=" + lang[1] + "\"/></object>";
+				oCopy.innerHTML = "<object data=\"" + url + "\" type=\"application/x-shockwave-flash\" width=\"100\" height=\"20\"><param name=\"wmode\" values=\"transparent\"/><param name=\"allowScriptAccess\" value=\"always\"/><param name=\"flashvars\" value=\"copy=" + index + "&lang=" + lang[1] + "\"/></object>";
 			}
 			oDiv.appendChild(oCopy);
-
-			var oAbout = $("a");
-			oAbout.className = "about";
-			oAbout.innerHTML = lang[3];
-			oAbout.href = "http://code.google.com/p/jssc/";
-			oAbout.target = "_blank"
-			oDiv.appendChild(oAbout);
 
 			var oOl = $("ol");
 			oOl.start = start;

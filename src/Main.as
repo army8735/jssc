@@ -61,11 +61,25 @@
 		private function initCopy(id:int):void {
 			var tf:TextField = getChildAt(0) as TextField;
 			tf.text = lang;
-			addEventListener(MouseEvent.CLICK, function() {
+			var sprite:Sprite = new Sprite();
+			sprite.graphics.beginFill(0);
+			sprite.graphics.drawRect(stage.width - tf.textWidth - 5, 0, stage.width, stage.height);
+			sprite.graphics.endFill();
+			sprite.buttonMode = true;
+			sprite.alpha = 0;
+			addChild(sprite);
+			sprite.addEventListener(MouseEvent.CLICK, function() {
+				tf.textColor = 0x0066CC;
 				if (ExternalInterface.available) {
 					var s:String = ExternalInterface.call(jsVar + ".copy", id);
 					System.setClipboard(s);
 				}
+			});
+			sprite.addEventListener(MouseEvent.MOUSE_OVER, function() {
+				tf.textColor = 0xFF0000;
+			});
+			sprite.addEventListener(MouseEvent.MOUSE_OUT, function() {
+				tf.textColor = 0x0066CC;
 			});
 		}
 		
