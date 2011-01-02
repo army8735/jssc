@@ -14,7 +14,7 @@
 		protected var peek:String; //向前看字符
 		protected var code:String; //原始代码
 		
-		protected var index:int, depth:int, line; //当前读入字符索引、深度、行数
+		protected var index:int, depth:int, line:int; //当前读入字符索引、深度、行数
 		
 		public function AbstractParser(keywords:Array):void {
 			peek = "";
