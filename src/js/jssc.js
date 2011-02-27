@@ -145,7 +145,7 @@ function(id, url, css, js, swf, lang) {
 			oOl.start = start;
 			oOl.className = syntax;
 			oOl.innerHTML = res;
-			var line = String(oOl.childNodes.length);
+			var line = String(oOl.childNodes.length + start);
 			oOl.style.paddingLeft = Math.max((line.length + 2) * 9, 30) + "px";
 			oOl.onmouseover = function(event) {
 				event = event || window.event;
