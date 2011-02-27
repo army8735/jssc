@@ -78,7 +78,7 @@ strictfp super synchronized this static null String".split(" ");
 				}
 			}
 			//高亮
-			result.append(HighLighter.annot(HtmlEncode.encode(code.slice(start, index))));
+			result.append(HighLighter.annot(HtmlEncode.encode(code.slice(start, --index))));
 			readch();
 		}
 	}
