@@ -137,7 +137,7 @@ function(id, url, css, js, swf, lang) {
 				}
 			}
 			else {
-				oCopy.innerHTML = "<object data=\"" + url + "\" type=\"application/x-shockwave-flash\" width=\"100\" height=\"20\"><param name=\"wmode\" values=\"transparent\"/><param name=\"allowScriptAccess\" value=\"always\"/><param name=\"flashvars\" value=\"copy=" + index + "&lang=" + lang[1] + "\"/></object>";
+				oCopy.innerHTML = "<object data=\"" + url + "\" type=\"application/x-shockwave-flash\" width=\"100\" height=\"20\"><param name=\"wmode\" value=\"transparent\"/><param name=\"allowScriptAccess\" value=\"always\"/><param name=\"flashvars\" value=\"copy=" + index + "&lang=" + lang[1] + "\"/></object>";
 			}
 			oDiv.appendChild(oCopy);
 
