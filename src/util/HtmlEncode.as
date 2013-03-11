@@ -2,7 +2,6 @@
 	/**
 	 * ...
 	 * @author army8735
-	 * @version 5.0 build 20100117
 	 */
 	
 	public class HtmlEncode	{
@@ -35,14 +34,6 @@
 			//反斜线因产生正则表达式的原因特殊对待
 			if (s.indexOf("\\") > -1) {
 				s = s.replace(/\\/g, ESCAPE);
-			}
-			return s;
-		}
-		public static function encodeWithLine(s:String, newLine:String):String {
-			s = encode(s);
-			//若有换行则替换
-			if (s.indexOf("\n") > -1) {
-				s = s.replace(/\n/g, "</span>" + newLine);
 			}
 			return s;
 		}

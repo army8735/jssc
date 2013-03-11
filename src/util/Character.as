@@ -2,7 +2,6 @@
 	/**
 	 * ...
 	 * @author army8735
-	 * @version 5.0 build 20100117
 	 */
 	
 	public class Character {
@@ -44,6 +43,9 @@
 		}
 		public static function isDigit16(c:String):Boolean {
 			return isDigit(c) || (c >= "a" && c <= "f") || (c >= "A" && c <= "F");
+		}
+		public static function isDigit2(c:String):Boolean {
+			return c >= "0" && c <= "1";
 		}
 		public static function isDigitOrDecimal(c:String):Boolean {
 			return isDigit(c) || c == DECIMAL;

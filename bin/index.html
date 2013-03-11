@@ -14,31 +14,76 @@
 	<li><a href="japanese.html">日本語</a></li>
 	<li><a href="russian.html">Русский</a></li>
 	<li><a href="german.html">Deutsch</a></li>
-	<li><a href="korean.html">한국인</a></li>
+	<li><a href="korean.html">한국어</a></li>
+	<li><a href="french.html">français</a></li>
+	<li><a href="spanish.html">español</a></li>
 </ul>
 
-<pre class="brush: js; start: 1000; max-height: 400;">//javascript
-var reg = /**//[\/][/][*]([\S\s]*?)(?:[*][/;\[\]]|$)|[\/][/g;//](.*)|"((?:\\\\|\\"|[^"///])*)"|'((?:\\\\|\\'|[^'\//;])*)'/gm; ''; /\d/.test(1);
+<pre class="brush: js; start: 10; max-height: 400;">
+//javascript
+if(true)/x/ * 3
+if(true) { /x/ * 3 }
+if(true) { 3 /x/ }
+var reg = /**//[\/][/][*]([\S\s]*?)(?:[*][/;\[\]]|$)|[\/][/g;//](.*)|"((?:\\\\|\\"|[^"///])*)"|'((?:\\\\|\\'|[^'\//;])*)'/gi; '/\\'; /\d/.test(1);
 reg = 12;
 reg = 2 / 1 /**///
 /**///
 /reg/ 1;
-var num1 = 0.541;
+var num1 = 0.541, num2 = .32E+8, num3 = 0.1E2, num3 = 238E-4;
+(
+[
+]
+)
 function f(test) {
-    return (test/*
-    /* //
-    ' "
-    { ;
-    \*/ && // /* // " ' { ; \
-    test &&
-    " /* // \
-    \" ' \
-    { ;" &&
-    ' /* // \
-    " \' \
-    { ;' &&
-    test);
-}</pre>
+	return (test/*
+	/* //
+	' "
+	{ ;
+	\*/ && // /* // " ' { ; \
+	test &&
+	" /* // \
+	\" ' \
+	{ ;" &&
+	' /* // \
+	" \' \
+	{ ;' &&
+	test);
+}
+// Simple JavaScript Templating
+// John Resig - http://ejohn.org/ - MIT Licensed
+(function(){
+  var cache = {};
+  
+  this.tmpl = function tmpl(str, data){
+    // Figure out if we're getting a template, or if we need to
+    // load the template - and be sure to cache the result.
+    var fn = !/\W/.test(str) ?
+      cache[str] = cache[str] ||
+        tmpl(document.getElementById(str).innerHTML) :
+      
+      // Generate a reusable function that will serve as a template
+      // generator (and which will be cached).
+      new Function("obj",
+        "var p=[],print=function(){p.push.apply(p,arguments);};" +
+        
+        // Introduce the data as local variables using with(){}
+        "with(obj){p.push('" +
+        
+        // Convert the template into pure JavaScript
+        str
+          .replace(/[\r\t\n]/g, " ")
+          .split("&lt;%").join("\t")
+          .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+          .replace(/\t=(.*?)%>/g, "',$1,'")
+          .split("\t").join("');")
+          .split("%>").join("p.push('")
+          .split("\r").join("\\'")
+      + "');}return p.join('');");
+    
+    // Provide some basic currying to the user
+    return data ? fn( data ) : fn;
+  };
+})();</pre>
 
 <textarea class="brush: java; first-line:2; new-class:java">//java
 import java.util.*;
@@ -49,6 +94,7 @@ public class Test {
 	StringBuilder sb = new StringBuilder();
 	sb.append("Hello ");
 	sb.append("World!");
+	@Override
 	public static void main(String[] args) {
 		if(true) {
 			System.out.println(sb.toString());
@@ -102,6 +148,7 @@ int main () {
 		&lt;/style>
 	&lt;/head>
 	&lt;body>
+		&lt;a href=''>test&lt/a>
 		&lt;div name="test">"content"&lt;/div>
 		&lt;p style="border: 1px solid #f33;"
 		name="p">我来跨行
@@ -109,6 +156,7 @@ int main () {
 		alt="再次
 		跨行">&lt;/p>
 		&lt;script>
+			if(true)/[&lt;/script>]/
 			//&lt;/script>
 			/*&lt;/script>*/
 			"&lt;/script>";
@@ -155,6 +203,21 @@ xml
 	&lt;appender-ref ref="CONSOLE"/>
 	&lt;test>test&lt;/test>
 &lt;/log4j:configuration></pre>
+
+<pre class="brush: python;">#!/usr/bin/env python
+__author__ = "lynn lin"
+from random import random
+def random_shuffle(A):
+    length = len(A)
+    for i in range(0,length):
+        randomi = int(random()*length)
+        print randomi
+        A,A[randomi] = A[randomi],A
+    return A
+if __name__ == '__main__':
+    A = [1,2,3,4,5]
+    B = random_shuffle(A)
+    print B</pre>
 
 <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" id="jssc5" style="position:absolute;left:-9999px;">
 	<param name="movie" value="jssc5.swf"/>

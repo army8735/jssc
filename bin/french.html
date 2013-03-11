@@ -21,27 +21,66 @@
 </ul>
 
 <pre class="brush: js; start: 10; max-height: 400;">//javascript
-var reg = /**//[\/][/][*]([\S\s]*?)(?:[*][/;\[\]]|$)|[\/][/g;//](.*)|"((?:\\\\|\\"|[^"///])*)"|'((?:\\\\|\\'|[^'\//;])*)'/gm; ''; /\d/.test(1);
+var reg = /**//[\/][/][*]([\S\s]*?)(?:[*][/;\[\]]|$)|[\/][/g;//](.*)|"((?:\\\\|\\"|[^"///])*)"|'((?:\\\\|\\'|[^'\//;])*)'/gi; '/\\'; /\d/.test(1);
 reg = 12;
 reg = 2 / 1 /**///
 /**///
 /reg/ 1;
-var num1 = 0.541;
+var num1 = 0.541, num2 = .32E+8, num3 = 0.1E2, num3 = 238E-4;
+(
+[
+]
+)
 function f(test) {
-    return (test/*
-    /* //
-    ' "
-    { ;
-    \*/ && // /* // " ' { ; \
-    test &&
-    " /* // \
-    \" ' \
-    { ;" &&
-    ' /* // \
-    " \' \
-    { ;' &&
-    test);
-}</pre>
+	return (test/*
+	/* //
+	' "
+	{ ;
+	\*/ && // /* // " ' { ; \
+	test &&
+	" /* // \
+	\" ' \
+	{ ;" &&
+	' /* // \
+	" \' \
+	{ ;' &&
+	test);
+}
+// Simple JavaScript Templating
+// John Resig - http://ejohn.org/ - MIT Licensed
+(function(){
+  var cache = {};
+  
+  this.tmpl = function tmpl(str, data){
+    // Figure out if we're getting a template, or if we need to
+    // load the template - and be sure to cache the result.
+    var fn = !/\W/.test(str) ?
+      cache[str] = cache[str] ||
+        tmpl(document.getElementById(str).innerHTML) :
+      
+      // Generate a reusable function that will serve as a template
+      // generator (and which will be cached).
+      new Function("obj",
+        "var p=[],print=function(){p.push.apply(p,arguments);};" +
+        
+        // Introduce the data as local variables using with(){}
+        "with(obj){p.push('" +
+        
+        // Convert the template into pure JavaScript
+        str
+          .replace(/[\r\t\n]/g, " ")
+          .split("&lt;%").join("\t")
+          .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+          .replace(/\t=(.*?)%>/g, "',$1,'")
+          .split("\t").join("');")
+          .split("%>").join("p.push('")
+          .split("\r").join("\\'")
+      + "');}return p.join('');");
+    
+    // Provide some basic currying to the user
+    return data ? fn( data ) : fn;
+  };
+})();</pre>
 
 <textarea class="brush: java; first-line:2; new-class:java">//java
 import java.util.*;
@@ -52,6 +91,7 @@ public class Test {
 	StringBuilder sb = new StringBuilder();
 	sb.append("Hello ");
 	sb.append("World!");
+	@Override
 	public static void main(String[] args) {
 		if(true) {
 			System.out.println(sb.toString());
@@ -161,8 +201,8 @@ xml
 
 <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" id="jssc5" style="position:absolute;left:-9999px;">
 	<param name="movie" value="jssc5.swf"/>
-	<param name="flashvars" value="find=brush&lang=korean"/>
-	<embed src="jssc5.swf" flashvars="find=brush&lang=korean" name="jssc5" type="application/x-shockwave-flash" style="position:absolute;left:-9999px;"/>
+	<param name="flashvars" value="find=brush&lang=french"/>
+	<embed src="jssc5.swf" flashvars="find=brush&lang=french" name="jssc5" type="application/x-shockwave-flash" style="position:absolute;left:-9999px;"/>
 </object>
 </body>
 </html>

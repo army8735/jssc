@@ -2,8 +2,6 @@
 	/**
 	 * ...
 	 * @author army8735
-	 * @version 5.0 build 20101223
-	 * @link http://code.google.com/p/jssc/
 	 */
 	import flash.display.*;
 	import flash.events.*;
@@ -13,12 +11,6 @@
 	import js.*;
 	import util.*;
 	import lexer.*;
-	import lexer.other.*;
-	import lexer.cseries.ecma.*;
-	import lexer.cseries.compile.candcpp.*;
-	import lexer.cseries.compile.java.*;
-	import lexer.cseries.other.*;
-	import lexer.markup.*;
 	
 	public class Main extends Sprite {
 		private var find:String;
@@ -55,7 +47,6 @@
 			if (ExternalInterface.available) {
 				ExternalInterface.addCallback("parse", onParseHandler);
 				ExternalInterface.call(CallJs.INIT, find, url, css, jsVar, swf, I18n.getLanguage(lang));
-				ExternalInterface.call(jsVar + ".exec");
 			}
 		}
 		private function initCopy(id:int):void {
@@ -102,46 +93,9 @@
 			var height:int = (array = /max-height\s*?\:\s*?(\d+)/i.exec(className)) == null ? 0 : int(array[1]);
 			var newClass:String = (array = /class-name\s*?\:\s*?(\w+)/i.exec(className)) == null ? "" : array[1];
 			//获取分析器进行解析
-			var parser:IParser = getParser(syntax);
-			var result:String = parser.parse(code);
-			//传回高亮好的代码
+			var lanLexer:ILexer = LanguageLexer.getLexer(syntax);
 			if (ExternalInterface.available) {
-				ExternalInterface.call(jsVar + ".genRes", syntax, start, height, newClass, result);
-			}
-		}
-		private function getParser(syntax:String):IParser {
-			switch(syntax.toLowerCase()) {
-				case "js":
-				case "javascript":
-				case "ecmascript":
-				case "jscript":
-					return new JavascriptParser();
-				case "as":
-				case "as2":
-				case "as3":
-				case "actionscript":
-				case "flash":
-					return new ActionscriptParser();
-				case "c":
-					return new CParser();
-				case "c++":
-				case "cpp":
-				case "cplusplus":
-					return new CppParser();
-				case "java":
-					return new JavaParser();
-				case "php":
-					return new PhpParser();
-				case "html":
-				case "xhtml":
-				case "htm":
-					return new HtmlParser();
-				case "css":
-					return new CssParser();
-				case "xml":
-					return new XmlParser();
-				default:
-					return new UnknowParser();
+				ExternalInterface.call(jsVar + ".genRes", syntax, start, height, newClass, lanLexer.parse(code));
 			}
 		}
 	}

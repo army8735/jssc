@@ -1,23 +1,22 @@
 /**
  * ...
  * @author army8735
- * @version 5.0 build 20101223
  */
 
-function(id, url, css, js, swf, lang) {
-	var isIE = (navigator.appName.indexOf("Microsoft") != -1);
-	var index = 0;
-	var aList = [];
-	var oSwf = null;
-	var oPre = null;
-	var oLast = null;
-	var oCursor = null;
+function temp(id, url, css, js, swf, lang) {
+	var isIE = (navigator.appName.indexOf("Microsoft") != -1),
+		isIE6 = isIE && !window.XMLHttpRequest,
+		gtIE9 = isIE && window.addEventListener,
+		index = 0,
+		aList = [],
+		oSwf,
+		oPre;
 
 	function $(name) {
 		return document.createElement(name);
 	}
 	function getSwf(name) {
-		if(isIE) {
+		if(isIE && !gtIE9) {
 			return window[name];
 		}
 		else {
@@ -89,6 +88,19 @@ function(id, url, css, js, swf, lang) {
 			}
 		}
 	}
+	//覆盖flash默认通信方法，提高性能
+	window.__flash__escapeXML = function(s) {
+		var keywords = {
+			"\"" : "&quot;",
+			"<" : "&lt;",
+			">" : "&gt;",
+			"\"" : "&apos;"
+		};
+		return s.replace(/&/g, "&amp;").replace(/(['"<>])/g, function(a, b) {
+			var c = keywords[b];
+			return c ? c : a;
+		});
+	};
 
 	var jssc = {
 		exec: function() {
@@ -140,29 +152,12 @@ function(id, url, css, js, swf, lang) {
 				oCopy.innerHTML = "<object data=\"" + url + "\" type=\"application/x-shockwave-flash\" width=\"100\" height=\"20\"><param name=\"wmode\" value=\"transparent\"/><param name=\"allowScriptAccess\" value=\"always\"/><param name=\"flashvars\" value=\"copy=" + index + "&lang=" + lang[1] + "\"/></object>";
 			}
 			oDiv.appendChild(oCopy);
-
 			var oOl = $("ol");
 			oOl.start = start;
 			oOl.className = syntax;
 			oOl.innerHTML = res;
 			var line = String(oOl.childNodes.length + start);
 			oOl.style.paddingLeft = Math.max((line.length + 2) * 9, 30) + "px";
-			oOl.onmouseover = function(event) {
-				event = event || window.event;
-				var target = event.srcElement || event.target;
-				//给总的代码ol添加事件，但获取侦听对象却需要是触发的节点对象li
-				while(target.tagName && target.tagName.toLowerCase() != "ol" && target.tagName.toLowerCase() != "li") {
-					target = target.parentNode;
-				}
-				if(target.tagName.toLowerCase() != "li") {
-					return;
-				}
-				if(oCursor) {
-					removeClass(oCursor, "actived");
-				}
-				addClass(target, "actived");
-				oCursor = target;
-			}
 			oOl.onclick = function(event) {
 				event = event || window.event;
 				var target = event.srcElement || event.target;
@@ -178,14 +173,21 @@ function(id, url, css, js, swf, lang) {
 
 			oPre.parentNode.insertBefore(oDiv, oPre);
 			oPre.style.display = "none";
-			oLast = oOl;
-			if(height > 20 && oOl.clientHeight > height) {
-				oOl.style.height = height + "px";
+			if(height && oOl.clientHeight > height) {
+				if(isIE6) {
+					oOl.style.height = height + "px";
+				}
+				else {
+					oOl.style.maxHeight = height + "px";
+				}
 			}
 
 			setTimeout(function() {
 				jssc.parseNext();
 			}, 0);
+		},
+		goOn: function(res) {
+			oCurrent.innerHTML += res;
 		},
 		copy: function(count) {
 			setTimeout(copyOk, 100);
@@ -193,4 +195,7 @@ function(id, url, css, js, swf, lang) {
 		}
 	};
 	window[js] = jssc;
+	setTimeout(function() {
+		jssc.exec();
+	}, 0);
 }
