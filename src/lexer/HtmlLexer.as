@@ -65,19 +65,19 @@ basefont colgroup".split(" "));
 			if (keywords.hasKey(tag)) {
 				if (peek != Character.RIGHT_ANGLE_BRACE) {
 					state = MARK;
-					if (tag == "style") {
+					if (tag == "style" || tag == "STYLE") {
 						css = true;
 					}
-					else if (tag == "script") {
+					else if (tag == "script" || tag == "SCRIPT") {
 						js = true;
 					}
 				}
 				else {
 					if (code.charAt(lastIndex + 1) != Character.SLASH) {
-						if (tag == "style") {
+						if (tag == "style" || tag == "STYLE") {
 							state = CSS;
 						}
-						else if (tag == "script") {
+						else if (tag == "script" || tag == "SCRIPT") {
 							state = JS;
 						}
 					}
@@ -90,48 +90,12 @@ basefont colgroup".split(" "));
 			lastIndex = index;
 		}
 		protected function dealCss(length:int):void {
-			var tag:String;
-			while (index <= length) {
-				if (peek == Character.SLASH) {
-					readch();
-					//多行注释
-					if (peek == Character.STAR) {
-						index = code.indexOf("*/", index);
-						if (index == -1) {
-							index = code.length;
-						}
-						else {
-							index += 2;
-						}
-					}
-					//单行注释
-					else if (peek == Character.SLASH) {
-						index = code.indexOf("\n", index);
-						if (index == -1) {
-							index = code.length;
-						}
-					}
-				}
-				else if (Character.isQuote(peek)) {
-					tag = peek;
-					while (index <= code.length) {
-						readch();
-						//转义
-						if (peek == Character.BACK_SLASH) {
-							readch();
-						}
-						else if (peek == tag) {
-							break;
-						}
-					}
-				}
-				else if (peek == Character.LEFT_ANGLE_BRACE) {
-					if (code.substr(index, 6).toLowerCase() == "/style") {
-						index--;
-						break;
-					}
-				}
-				readch();
+			index = code.indexOf("</style>", index);
+			if (index == -1) {
+				index = code.indexOf("</STYLE>", index);
+			}
+			if (index == -1) {
+				index = code.length;
 			}
 			tokens.push(new Token(Token.EMBED_CSS, code.slice(lastIndex, index)));
 			lastIndex = index;
@@ -139,105 +103,12 @@ basefont colgroup".split(" "));
 			css = false;
 		}
 		protected function dealJs(length:int):void {
-			parentheseState = false;
-			parentheseStack = new Vector.<Boolean>();
-			var isPerlReg:Boolean = true,
-				tag:String;
-			//找到第一个</script>，注意注释、字符串、正则等要忽略掉
-			while (index <= length) {
-				if (peek == Character.SLASH) {
-					readch();
-					//多行注释
-					if (peek == Character.STAR) {
-						index = code.indexOf("*/", index);
-						if (index == -1) {
-							index = code.length;
-						}
-						else {
-							index += 2;
-						}
-					}
-					//单行注释
-					else if (peek == Character.SLASH) {
-						index = code.indexOf("\n", index);
-						if (index == -1) {
-							index = code.length;
-						}
-					}
-					//正则
-					else if (isPerlReg) {
-						while (index <= length) {
-							if (peek == Character.BACK_SLASH) {
-								readch();
-							}
-							else if (peek == Character.SLASH) {
-								break;
-							}
-							else if (peek == Character.LEFT_BRACKET) {
-								while (index <= length) {
-									readch();
-									if (peek == Character.BACK_SLASH) {
-										readch();
-									}
-									else if (peek == Character.RIGHT_BRACKET) {
-										break;
-									}
-								}
-							}
-							readch();
-						}
-						isPerlReg = false;
-					}
-					//除号
-					else {
-						isPerlReg = false;
-					}
-				}
-				else if (Character.isQuote(peek)) {
-					tag = peek;
-					while (index <= code.length) {
-						readch();
-						//转义
-						if (peek == Character.BACK_SLASH) {
-							readch();
-						}
-						else if (peek == tag) {
-							break;
-						}
-					}
-					isPerlReg = true;
-				}
-				else if (peek == Character.LEFT_ANGLE_BRACE) {
-					tag = code.substr(index, 8).toLowerCase();
-					if (tag == "/script>") {
-						index--;
-						break;
-					}
-				}
-				else if (peek == Character.LEFT_PARENTHESE) {
-					parentheseStack.push(parentheseState);
-					parentheseState = false;
-				}
-				else if (peek == Character.RIGHT_PARENTHESE) {
-					isPerlReg = parentheseStack.pop();
-					parentheseState = false;
-				}
-				else if (Character.isIdentifiers(peek) || peek == Character.DOLLAR) {
-					var start:int = index - 1;
-					while (index < length) {
-						readch();
-						if (!Character.isIdentifiers(peek) && peek != Character.DOLLAR && !Character.isDigit(peek)) {
-							break;
-						}
-					}
-					var ids:String = code.slice(start, --index);
-					parentheseState = EcmascriptRule.KEYWORDS.indexOf(ids) != -1;
-					isPerlReg = EcmascriptRule.KEYWORDS.indexOf(ids) != -1;
-				}
-				else if(!Character.isBlank(peek) && Character.LINE != peek) {
-					isPerlReg = true;
-				}
-				readch();
+			index = code.indexOf("</script>", index);
+			if (index == -1) {
+				index = code.indexOf("</SCRIPT>", index);
+			}
+			if (index == -1) {
+				index = code.length;
 			}
 			tokens.push(new Token(Token.EMBED_JS, code.slice(lastIndex, index)));
 			lastIndex = index;
