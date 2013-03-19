@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>jsdc</title>
+<style>
+body{font:12px/1.25 arail;background-color:#fff;line-height:1.25;}
+
+.jssc .num{color:#088;}
+.jssc .keyword{color:#33f;}
+.jssc .comment{color:#393;}
+.jssc .string{color:#a33;}
+.jssc .reg, .jssc .annot, .jssc .head, .jssc .declare{color:#999;}
+.jssc .annot{font-style:italic;}
+.jssc .attr{color:#909;}
+.jssc .tags, .jssc .cdata{color:#c96;}
+.jssc .namespace{color:#f00;}
+.jssc .depth{color:#fc0;}
+.jssc .java .keyword{color:#909;}
+
+.jssc{position:relative;}
+.jssc p{margin:10px 0;color:#79a;text-indent:2em;font-weight:700;font-family:"Verdana","\5b8b\4f53";}
+.jssc .error{color:#f33;}
+.jssc .copy{display:block;position:absolute;top:0;right:0;cursor:pointer;color:#39f;}
+.jssc ol{margin:0;padding:0;overflow:auto;border:1px solid #ccc;background-color:#eee;font-family:Consolas,momospace,"\5b8b\4f53","Courier New";font-size:13px;clear:both;}
+.jssc ol li{margin:0;padding-left:10px;border-left:1px solid #abc;background-color:#fff;color:#333;word-wrap:break-word;word-break:break-all;}
+.jssc ol li:hover{background-color:#ff9;}
+.jssc ol li.even{background-color:#eee;}
+.jssc ol li .error{background-color:#f33;}
+.jssc ol .fold{background:#eee;font-style:italic;}
+.jssc ol .fold:after{content:"...";}
+.jssc ol .hide{position:absolute;visibility:hidden;}
+</style>
+</head>
+<body>
+<pre class="brush: js; start: 10; max-height: 400;">//javascript
+/\d/.test(1);
+if(true)/x/ * 3
+if(true) { /x/ * 3 }
+if(true) { 3 /x/ }
+var reg = /**//[\/][/][*]([\S\s]*?)(?:[*][/;\[\]]|$)|[\/][/g;//](.*)|"((?:\\\\|\\"|[^"///])*)"|'((?:\\\\|\\'|[^'\//;])*)'/gi; '/\\'; /\d/.test(1);
+reg = 12;
+reg = 2 / 1 /**///
+/**///
+/reg/ 1;
+var num1 = 0.541, num2 = .32E+8, num3 = 0.1E2, num3 = 238E-4;
+(
+[
+]
+)
+function f(test) {
+	return (test/*
+	/* //
+	' "
+	{ ;
+	\*/ && // /* // " ' { ; \
+	test &&
+	" /* // \
+	\" ' \
+	{ ;" &&
+	' /* // \
+	" \' \
+	{ ;' &&
+	test);
+}
+// Simple JavaScript Templating
+// John Resig - http://ejohn.org/ - MIT Licensed
+(function(){
+  var cache = {};
+  
+  this.tmpl = function tmpl(str, data){
+    // Figure out if we're getting a template, or if we need to
+    // load the template - and be sure to cache the result.
+    var fn = !/\W/.test(str) ?
+      cache[str] = cache[str] ||
+        tmpl(document.getElementById(str).innerHTML) :
+      
+      // Generate a reusable function that will serve as a template
+      // generator (and which will be cached).
+      new Function("obj",
+        "var p=[],print=function(){p.push.apply(p,arguments);};" +
+        
+        // Introduce the data as local variables using with(){}
+        "with(obj){p.push('" +
+        
+        // Convert the template into pure JavaScript
+        str
+          .replace(/[\r\t\n]/g, " ")
+          .split("<%").join("\t")
+          .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+          .replace(/\t=(.*?)%>/g, "',$1,'")
+          .split("\t").join("');")
+          .split("%>").join("p.push('")
+          .split("\r").join("\\'")
+      + "');}return p.join('');");
+    
+    // Provide some basic currying to the user
+    return data ? fn( data ) : fn;
+  };
+})();</pre>
+<script src="Ai.js"></script>
+<script>
+require('jssc', function(jssc) {
+	jssc.exec();
+});
+</script>
+</body>
+</html>
