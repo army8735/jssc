@@ -3,10 +3,18 @@ define(function(require, exports) {
 	exports.ENTER = '\r';
 	exports.BLANK = ' ';
 	exports.TAB = '\t';
-	exports.isDigit = function(s) {
-		return s >= '0' && s <= '9';
+	exports.UNDERLINE = '_';
+	exports.DOLLAR = '$';
+	exports.SHARP = '#';
+	exports.MINUS = '-';
+	exports.AT = '@';
+	exports.isDigit = function(c) {
+		return c >= '0' && c <= '9';
 	};
-	exports.isDigit16 = function(s) {
-		return exports.isDigit(s) || (s >= "a" && s <= "f") || (s >= "A" && s <= "F");
+	exports.isDigit16 = function(c) {
+		return exports.isDigit(c) || (c >= "a" && c <= "f") || (c >= "A" && c <= "F");
+	};
+	exports.isLetter = function(c) {
+		return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z");
 	};
 });

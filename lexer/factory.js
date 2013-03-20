@@ -1,5 +1,5 @@
 define(function(require, exports) {
-	var LanguageLexer = require('./LanguageLexer'),
+	var Lexer = require('./Lexer'),
 		EcmascriptRule = require('./rule/EcmascriptRule');
 	exports.lexer = function(syntax) {
 		switch(syntax.toLowerCase()) {
@@ -11,7 +11,7 @@ define(function(require, exports) {
 			case "as3":
 			case "actionscript":
 			case "actionscript3":
-				return new LanguageLexer(new EcmascriptRule());
+				return new Lexer(new EcmascriptRule());
 			/*case "java":
 				return new LanguageLexer(new JavaRule());
 			case "c":

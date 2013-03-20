@@ -20,14 +20,16 @@ define(function(require, exports, module) {
 			return this.tokens;
 		},
 		scan: function() {
+			var perlReg = this.rule.perlReg,
+				length = this.code.length;
 			outer:
-			while(this.index < this.code.length) {
+			while(this.index < length) {
 				this.readch();
 				//内嵌解析空白
 				if(character.BLANK == this.peek) {
 					this.tokens.push(new Token(Token.BLANK, this.peek));
 				}
-				if(character.TAB == this.peek) {
+				else if(character.TAB == this.peek) {
 					this.tokens.push(new Token(Token.TAB, this.peek));
 				}
 				//内嵌解析换行
@@ -43,6 +45,21 @@ define(function(require, exports, module) {
 				}
 				else if(this.peek == '.') {
 					this.dealDecimal();
+				}
+				//依次遍历匹配规则，命中则继续
+				else {
+					for(var i = 0, matches = this.rule.matches(), len = matches.length; i < len; i++) {
+						var match = matches[i];
+						if(match.start(this.peek) && match.match(this.code, this.index)) {
+							this.tokens.push(new Token(match.tokeyType(), match.content()));
+							this.index += match.content().length - 1;
+							this.lastIndex = this.index;
+							continue outer;
+						}
+					}
+					//如果有未匹配的，说明规则不完整，加入other类型并抛出警告
+					this.tokens.push(new Token(Token.OTHER, this.peek));
+					console.warn('unknow token at ' + (this.index - 1) + ': ' + this.peek + ', charcode : ' + this.peek.charCodeAt(0));
 				}
 				this.lastIndex = this.index;
 			}
@@ -131,5 +148,10 @@ define(function(require, exports, module) {
 			}
 			this.tokens.push(new Token(Token.NUMBER, this.code.slice(this.lastIndex, --this.index)));
 		}
+	}).statics({
+		IGNORE: 0,
+		IS_PERL_REG: 1,
+		NOT_PERL_REG: 2,
+		KEYWORD: 3
 	});
 });

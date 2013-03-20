@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
 	var Class = require('../util/Class');
-	return Class(function(type, val) {
+	module.exports = Class(function(type, val) {
 		this.t = type;
 		this.v = val;
 	}).methods({
@@ -11,9 +11,14 @@ define(function(require, exports, module) {
 			return this.v;
 		}
 	}).statics({
-		BLANK: 0,
-		TAB: 1,
-		LINE: 2,
-		NUMBER: 3
+		OTHER: 0,
+		BLANK: 1,
+		TAB: 2,
+		LINE: 3,
+		NUMBER: 4,
+		ID: 5,
+		COMMENT: 6,
+		STRING: 7,
+		SIGN: 8
 	});
 });
