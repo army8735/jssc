@@ -25,12 +25,17 @@ define(function(require, exports) {
 			start = (array = /first-line\s*?\:\s*?(\w+)/i.exec(node.className)) == null ? 0 : parseInt(array[1]);
 		}
 		start = Math.max(1, start);
-		console.log(syntax, start, height, newClass);
 		var lexer = factory.lexer(syntax),
 			res = lexer.parse(code);
+		var arr = [];
 		res.forEach(function(o) {
-			console.log(o.type(), o.val());
+			arr.push({
+				type: o.type(),
+				tag: o.tag(),
+				val: o.val()
+			});
 		});
+		console.table(arr);
 	}
 
 	exports.exec = function(tagName, className) {

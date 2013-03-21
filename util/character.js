@@ -8,11 +8,25 @@ define(function(require, exports) {
 	exports.SHARP = '#';
 	exports.MINUS = '-';
 	exports.AT = '@';
+	exports.SLASH = '/';
+	exports.BACK_SLASH = '\\',
+	exports.DECIMAL = '.';
+	exports.LEFT_BRACKET = '[';
+	exports.RIGHT_BRACKET = ']';
+	exports.STAR = '*';
+	exports.LEFT_PARENTHESE = '(';
+	exports.RIGHT_PARENTHESE = ')';
 	exports.isDigit = function(c) {
 		return c >= '0' && c <= '9';
 	};
 	exports.isDigit16 = function(c) {
 		return exports.isDigit(c) || (c >= "a" && c <= "f") || (c >= "A" && c <= "F");
+	};
+	exports.isDigit2 = function(c) {
+		return c == '0' || '1';
+	};
+	exports.isDigit8 = function(c) {
+		return c >= '0' && c <= '7';
 	};
 	exports.isLetter = function(c) {
 		return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z");

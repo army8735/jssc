@@ -8,7 +8,7 @@ define(function(require, exports, module) {
 		tokeyType: function() {
 			return this.type;
 		},
-		setPerlReg: function() {
+		perlReg: function() {
 			return this.setPReg;
 		},
 		content: function() {

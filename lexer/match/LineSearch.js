@@ -12,12 +12,13 @@ define(function(require, exports, module) {
 		Match.call(this, type, setPReg);
 		this.begin = begin;
 		this.end = end;
+		this.contain = contain;
 	}).methods({
 		start: function(c) {
 			return c == this.begin.charAt(0);
 		},
 		match: function(code, index) {
-			var res = code.slice(--index, this.begin.length) == this.begin;
+			var res = code.substr(--index, this.begin.length) == this.begin;
 			//begin必须完全相等
 			if(res) {
 				var i = code.indexOf(this.end, index + this.start.length);
