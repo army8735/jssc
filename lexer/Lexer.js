@@ -10,18 +10,27 @@ define(function(require, exports, module) {
 		this.lastIndex = 0; //上次peek索引
 		this.isReg = Lexer.IS_REG; //当前/是否是perl风格正则表达式
 		this.lanDepth = 0; //生成最终结果时需要记录的行深度
-		this.tokens = []; //结果的token列表
+		this.tokens = null; //结果的token列表
 		this.parentheseState = false; //(开始时标记之前终结符是否为if/for/while等关键字
 		this.parentheseStack = []; //圆括号深度记录当前是否为if/for/while等语句内部
+		this.cacheLine = 0; //行缓存值
+		this.totalLine = 0; //总行数
 	}).methods({
 		parse: function(code) {
 			this.code = code;
+			this.tokens = [];
+			this.scan();
+			return this.tokens;
+		},
+		parseCache: function() {
+			this.tokens = [];
 			this.scan();
 			return this.tokens;
 		},
 		scan: function() {
 			var perlReg = this.rule.perlReg(),
-				length = this.code.length;
+				length = this.code.length,
+				count = 0;
 			outer:
 			while(this.index < length) {
 				this.readch();
@@ -34,7 +43,12 @@ define(function(require, exports, module) {
 				}
 				//内嵌解析换行
 				else if(character.LINE == this.peek) {
+					this.totalLine++;
 					this.tokens.push(new Token(Token.LINE, this.peek));
+					if(this.cacheLine > 0 && ++count >= this.cacheLine) {
+						this.lastIndex = this.index;
+						break;
+					}
 				}
 				//忽略回车
 				else if(character.ENTER == this.peek) {
@@ -46,7 +60,7 @@ define(function(require, exports, module) {
 						this.isReg = Lexer.NOT_REG;
 					}
 				}
-				else if(this.peek == character.DECIMAL) {
+				else if(this.peek == character.DECIMAL && character.isDigit(this.code.charAt(this.index))) {
 					this.dealDecimal();
 					if(perlReg) {
 						this.isReg = Lexer.NOT_REG;
@@ -61,9 +75,17 @@ define(function(require, exports, module) {
 					for(var i = 0, matches = this.rule.matches(), len = matches.length; i < len; i++) {
 						var match = matches[i];
 						if(match.start(this.peek) && match.match(this.code, this.index)) {
-							this.tokens.push(new Token(match.tokeyType(), match.content()));
+							var token = new Token(match.tokenType(), match.content());
+							if(token.type() == Token.ID && this.rule.keyWords()[token.val()]) {
+								token.type(Token.KEYWORD);
+							}
+							this.tokens.push(token);
 							this.index += match.content().length - 1;
 							this.lastIndex = this.index;
+							var n = character.count(token.val(), '\n');
+							count += n;
+							this.totalLine += n;
+							//支持perl正则需判断关键字、圆括号对除号语义的影响
 							if(perlReg && match.perlReg() != Lexer.IGNORE) {
 								if(match.perlReg() == Lexer.SPECIAL) {
 									this.isReg = !!this.rule.keyWords()[match.content()];
@@ -71,7 +93,7 @@ define(function(require, exports, module) {
 								else {
 									this.isReg = match.perlReg();
 								}
-								if(match.tokeyType() == Token.ID) {
+								if(match.tokenType() == Token.ID) {
 									this.parentheseState = !!this.rule.keyWords()[match.content()];
 								}
 								else if(this.peek == character.LEFT_PARENTHESE) {
@@ -128,8 +150,14 @@ define(function(require, exports, module) {
 					} while(character.isDigit8(this.peek) || this.peek == character.DECIMAL);
 					this.tokens.push(new Token(Token.NUMBER, this.code.slice(this.lastIndex, --this.index)));
 				}
+				//小数
 				else if(this.peek == character.DECIMAL) {
 					this.dealDecimal();
+				}
+				//就是个0
+				else {
+					this.tokens.push(new Token(Token.NUMBER, '0'));
+					this.index--;
 				}
 				return;
 			}
@@ -211,6 +239,18 @@ define(function(require, exports, module) {
 				}
 			} while(this.index < length);
 			this.tokens.push(new Token(Token.REG, this.code.slice(lastIndex, --this.index)));
+		},
+		cache: function(i) {
+			if(i !== undefined) {
+				this.cacheLine = i;
+			}
+			return this.cacheLine;
+		},
+		finish: function() {
+			return this.index >= this.code.length;
+		},
+		line: function() {
+			return this.totalLine;
 		}
 	}).statics({
 		IGNORE: 0,

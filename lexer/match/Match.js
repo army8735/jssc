@@ -5,7 +5,7 @@ define(function(require, exports, module) {
 		this.setPReg = setPReg;
 		this.result = null;
 	}).methods({
-		tokeyType: function() {
+		tokenType: function() {
 			return this.type;
 		},
 		perlReg: function() {

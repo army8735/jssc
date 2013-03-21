@@ -31,4 +31,12 @@ define(function(require, exports) {
 	exports.isLetter = function(c) {
 		return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z");
 	};
+	exports.count = function(s, c) {
+		var count = 0,
+			i = -1;
+		while((i = s.indexOf(c, i + 1)) != -1) {
+			count++;
+		}
+		return count;
+	};
 });

@@ -5,7 +5,10 @@ define(function(require, exports, module) {
 			this.t = type;
 			this.v = val;
 		}).methods({
-			type: function() {
+			type: function(t) {
+				if(t !== undefined) {
+					this.t = t;
+				}
 				return this.t;
 			},
 			val: function() {
@@ -25,6 +28,7 @@ define(function(require, exports, module) {
 			STRING: 7,
 			SIGN: 8,
 			REG: 9,
+			KEYWORD: 10,
 			type: function(tag) {
 				if(types === undefined) {
 					types = [];
