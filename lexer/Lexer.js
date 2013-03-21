@@ -107,7 +107,7 @@ define(function(require, exports, module) {
 				//0后面是x或者X为16进制
 				if(this.peek.toUpperCase() == 'X') {
 					do {
-						readch();
+						this.readch();
 					} while(character.isDigit16(this.peek) || this.peek == character.DECIMAL);
 					if(this.peek.toUpperCase() == 'H') {
 						this.readch();
@@ -117,7 +117,7 @@ define(function(require, exports, module) {
 				//0后面是b或者B是2进制
 				else if(this.peek.toUpperCase() == 'B') {
 					do {
-						readch();
+						this.readch();
 					} while(character.isDigit2(this.peek) || this.peek == character.DECIMAL);
 					this.tokens.push(new Token(Token.NUMBER, this.code.slice(this.lastIndex, --this.index)));
 				}
