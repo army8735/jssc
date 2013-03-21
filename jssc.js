@@ -44,7 +44,7 @@ define(function(require, exports) {
 			ol = document.createElement('ol');
 		ol.innerHTML = res;
 		ol.start = start;
-		ol.style.paddingLeft = (String(lexer.line()).length - 1) * 10 + 30 + 'px';
+		ol.style.paddingLeft = (String(lexer.line()).length - 1) * 9 + 30 + 'px';
 		div.innerHTML = '<p>' + syntax + ' code</p>';
 		div.appendChild(ol);
 		div.className = 'jssc';
@@ -64,7 +64,7 @@ define(function(require, exports) {
 				}
 				var res = render(tokens, tabBlank);
 				ol.innerHTML += res;
-				ol.style.paddingLeft = (String(lexer.line()).length - 1) * 10 + 30 + 'px';
+				ol.style.paddingLeft = (String(lexer.line()).length - 1) * 9 + 30 + 'px';
 				setTimeout(parseNext, cacheTime);
 			}
 		}
