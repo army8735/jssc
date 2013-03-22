@@ -33,7 +33,7 @@ define(function(require, exports) {
 			tabBlank = '';
 		for(var i = 0; i < tab; i++) {
 			tabBlank += '&nbsp';
-		}
+		}console.log(lexer);
 		lexer.cache(cache != null ? cache : cacheLine);
 		var tokens = lexer.parse(code);
 		if(!lexer.finish() && tokens[tokens.length - 1].type() == Token.LINE) {
@@ -42,7 +42,7 @@ define(function(require, exports) {
 		var res = render(tokens, tabBlank),
 			div = document.createElement('div');
 			ol = document.createElement('ol');
-		ol.innerHTML = res;
+		ol.appendChild(res);
 		ol.start = start;
 		ol.style.paddingLeft = (String(lexer.line()).length - 1) * 9 + 30 + 'px';
 		div.innerHTML = '<p>' + syntax + ' code</p>';
@@ -62,8 +62,8 @@ define(function(require, exports) {
 				if(!lexer.finish() && tokens[tokens.length - 1].type() == Token.LINE) {
 					tokens.pop();
 				}
-				var res = render(tokens, tabBlank);
-				ol.innerHTML += res;
+				var df = render(tokens, tabBlank);
+				ol.appendChild(df);
 				ol.style.paddingLeft = (String(lexer.line()).length - 1) * 9 + 30 + 'px';
 				setTimeout(parseNext, cacheTime);
 			}
@@ -71,26 +71,60 @@ define(function(require, exports) {
 		parseNext();
 	}
 	function render(tokens, tabBlank) {
-		var res = ['<li>'];
+		var df = document.createDocumentFragment(),
+			li = document.createElement('li'),
+			temp = [];
 		tokens.forEach(function(o) {
 			if(o.type() == Token.LINE) {
-				res.push('</li><li>');
+				if(!temp.length) {
+					temp.push('&nbsp;');
+				}
+				li.innerHTML = temp.join('');
+				df.appendChild(li);
+				li = document.createElement('li');
+				temp = [];
 			}
 			else if(o.type() == Token.BLANK) {
-				res.push('&nbsp;');
+				temp.push('&nbsp;');
 			}
 			else if(o.type() == Token.TAB) {
-				res.push(tabBlank);
+				temp.push(tabBlank);
 			}
 			else if(o.type() == Token.SIGN) {
-				res.push(o.val());
+				temp.push(o.val());
 			}
 			else {
-				res.push('<span class="' + Token.type(o.type()).toLowerCase() + '">' + o.val().replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;').replace(/\n/g, '</span></li><li><span class="' + Token.type(o.type()).toLowerCase() + '">') + '</span>');
+				if(o.val().indexOf('\n') == -1) {
+					temp.push('<span class="' + Token.type(o.type()).toLowerCase() + '">' + o.val().replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>');
+				}
+				else {
+					var arr = o.val().split('\n'),
+						len = arr.length;
+					arr.forEach(function(s, i) {
+						if(i == 0) {
+							temp.push('<span class="' + Token.type(o.type()).toLowerCase() + '">' + s.replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>');
+							li.innerHTML = temp.join('');
+							df.appendChild(li);
+						}
+						else if(i == len - 1) {
+							temp = [];
+							temp.push('<span class="' + Token.type(o.type()).toLowerCase() + '">' + s.replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>');
+						}
+						else {
+							li.innerHTML = '<span class="' + Token.type(o.type()).toLowerCase() + '">' + s.replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>';
+							df.appendChild(li);
+						}
+						li = document.createElement('li');
+					});
+				}
 			}
 		});
-		res.push('</li>');
-		return res.join('');
+		if(!temp.length) {
+			temp.push('&nbsp;');
+		}
+		li.innerHTML = temp.join('');
+		df.appendChild(li);
+		return df;
 	}
 
 	exports.exec = function(tagName, className) {
