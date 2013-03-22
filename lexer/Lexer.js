@@ -17,10 +17,9 @@ define(function(require, exports, module) {
 		this.totalLine = 0; //×ÜÐÐÊý
 	}).methods({
 		parse: function(code) {
-			this.code = code;
-			return this.parseCache();
-		},
-		parseCache: function() {
+			if(code !== undefined) {
+				this.code = code;
+			}
 			this.tokens = [];
 			this.scan();
 			return this.tokens;
@@ -239,7 +238,7 @@ define(function(require, exports, module) {
 			this.tokens.push(new Token(Token.REG, this.code.slice(lastIndex, --this.index)));
 		},
 		cache: function(i) {
-			if(i !== undefined) {
+			if(i !== undefined && i !== null) {
 				this.cacheLine = i;
 			}
 			return this.cacheLine;

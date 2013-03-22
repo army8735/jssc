@@ -19,33 +19,35 @@ define(function(require, exports) {
 		}
 		var code = getText(node),
 			array,
-			syntax = (array = new RegExp(find + '\\s*?\:\\s*?(\\w+)', 'i').exec(node.className)) == null ? null : array[1],
-			start = (array = /start\s*\:\s*(\w+)/i.exec(node.className)) == null ? 0 : parseInt(array[1]),
-			height = (array = /max-height\s*\:\s*(\d+)/i.exec(node.className)) == null ? 0 : parseInt(array[1]),
+			syntax = (array = new RegExp(find + '\\s*?\:\\s*?(\\w+)', 'i').exec(node.className)) === null ? null : array[1],
+			start = (array = /start\s*\:\s*(\w+)/i.exec(node.className)) === null ? 0 : parseInt(array[1]),
+			height = (array = /max-height\s*\:\s*(\d+)/i.exec(node.className)) === null ? 0 : parseInt(array[1]),
 			tab = (array = /tab\s*\:\s*(\d+)/i.exec(node.className)) == null ? 4 : parseInt(array[1]),
-			cache = (array = /cache\s*\:\s*(\d+)/i.exec(node.className)) == null ? null : parseInt(array[1]),
-			newClass = (array = /class-name\s*?\:\s*?(\w+)/i.exec(node.className)) == null ? null : array[1];
+			cache = (array = /cache\s*\:\s*(\d+)/i.exec(node.className)) === null ? null : parseInt(array[1]),
+			newClass = (array = /class-name\s*?\:\s*?(\w+)/i.exec(node.className)) === null ? null : array[1];
 		//¼æÈÝshµÄfirst-line
 		if(start < 1) {
-			start = (array = /first-line\s*?\:\s*?(\w+)/i.exec(node.className)) == null ? 0 : parseInt(array[1]);
+			start = (array = /first-line\s*?\:\s*?(\w+)/i.exec(node.className)) === null ? 0 : parseInt(array[1]);
 		}
 		start = Math.max(1, start);
 		var lexer = factory.lexer(syntax),
-			tabBlank = '';
+			tabBlank = '',
+			div = document.createElement('div'),
+			ol = document.createElement('ol');
+		ol.start = start;
 		for(var i = 0; i < tab; i++) {
 			tabBlank += '&nbsp';
 		}
-		lexer.cache(cache != null ? cache : cacheLine);
-		var tokens = lexer.parse(code);
-		if(!lexer.finish() && tokens[tokens.length - 1].type() == Token.LINE) {
-			tokens.pop();
+		lexer.cache(cache !== null ? cache : cacheLine);
+		function join(tokens) {
+			if(!lexer.finish() && tokens[tokens.length - 1].type() == Token.LINE) {
+				tokens.pop();
+			}
+			var df = render(tokens, tabBlank);
+			ol.appendChild(df);
+			ol.style.paddingLeft = (String(lexer.line()).length - 1) * 9 + 30 + 'px';
 		}
-		var res = render(tokens, tabBlank),
-			div = document.createElement('div');
-			ol = document.createElement('ol');
-		ol.appendChild(res);
-		ol.start = start;
-		ol.style.paddingLeft = (String(lexer.line()).length - 1) * 9 + 30 + 'px';
+		join(lexer.parse(code));
 		div.innerHTML = '<p>' + syntax + ' code</p>';
 		div.appendChild(ol);
 		div.className = 'jssc';
@@ -62,13 +64,7 @@ define(function(require, exports) {
 				}, cacheTime);
 			}
 			else {
-				var tokens = lexer.parseCache();
-				if(!lexer.finish() && tokens[tokens.length - 1].type() == Token.LINE) {
-					tokens.pop();
-				}
-				var df = render(tokens, tabBlank);
-				ol.appendChild(df);
-				ol.style.paddingLeft = (String(lexer.line()).length - 1) * 9 + 30 + 'px';
+				join(lexer.parse());
 				setTimeout(parseNext, cacheTime);
 			}
 		}
