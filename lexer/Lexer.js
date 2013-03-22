@@ -18,9 +18,7 @@ define(function(require, exports, module) {
 	}).methods({
 		parse: function(code) {
 			this.code = code;
-			this.tokens = [];
-			this.scan();
-			return this.tokens;
+			return this.parseCache();
 		},
 		parseCache: function() {
 			this.tokens = [];
