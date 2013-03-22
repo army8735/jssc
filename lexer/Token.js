@@ -29,6 +29,8 @@ define(function(require, exports, module) {
 			SIGN: 8,
 			REG: 9,
 			KEYWORD: 10,
+			ANNOT: 11,
+			HEAD: 12,
 			type: function(tag) {
 				if(types === undefined) {
 					types = [];

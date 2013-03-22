@@ -12,14 +12,14 @@ define(function(require, exports) {
 			case "actionscript":
 			case "actionscript3":
 				return new Lexer(new EcmascriptRule());
-			/*case "java":
-				return new LanguageLexer(new JavaRule());
+			case "java":
+				return new Lexer(new JavaRule());
 			case "c":
 			case "c++":
 			case "cpp":
 			case "cplusplus":
-				return new LanguageLexer(new CRule());
-			case "py":
+				return new Lexer(new CRule());
+			/*case "py":
 			case "python":
 				return new PythonLexer(new PythonRule());
 			case "xml":
