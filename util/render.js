@@ -31,14 +31,14 @@ define(function(require, exports, module) {
 				temp.push(tabBlank);
 			}
 			else if(o.type() == Token.SIGN) {
-				temp.push(escapeHtml(o.val()));
+				temp.push(escapeHtml(o.content()));
 			}
 			else {
-				if(o.val().indexOf('\n') == -1) {
-					temp.push('<span class="' + Token.type(o.type()).toLowerCase() + '">' + escapeHtml(o.val()).replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>');
+				if(o.content().indexOf('\n') == -1) {
+					temp.push('<span class="' + Token.type(o.type()).toLowerCase() + '">' + escapeHtml(o.content()).replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>');
 				}
 				else {
-					var arr = o.val().split('\n'),
+					var arr = o.content().split('\n'),
 						len = arr.length;
 					arr.forEach(function(s, i) {
 						if(i == 0) {

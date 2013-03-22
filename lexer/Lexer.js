@@ -71,8 +71,8 @@ define(function(require, exports, module) {
 				else {
 					for(var i = 0, matches = this.rule.matches(), len = matches.length; i < len; i++) {
 						var match = matches[i];
-						if(match.start(this.peek) && match.match(this.code, this.index)) {
-							var token = new Token(match.tokenType(), match.content());
+						if(match.match(this.peek, this.code, this.index)) {
+							var token = new Token(match.tokenType(), match.content(), match.val());
 							if(token.type() == Token.ID && this.rule.keyWords()[token.val()]) {
 								token.type(Token.KEYWORD);
 							}

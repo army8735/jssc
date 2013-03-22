@@ -1,8 +1,12 @@
 define(function(require, exports, module) {
 	var Class = require('../util/Class'),
 		types,
-		Token = Class(function(type, val) {
+		Token = Class(function(type, content, val) {
 			this.t = type;
+			this.c = content;
+			if(val === undefined) {
+				val = content;
+			}
 			this.v = val;
 		}).methods({
 			type: function(t) {
@@ -10,6 +14,9 @@ define(function(require, exports, module) {
 					this.t = t;
 				}
 				return this.t;
+			},
+			content: function() {
+				return this.c;
 			},
 			val: function() {
 				return this.v;

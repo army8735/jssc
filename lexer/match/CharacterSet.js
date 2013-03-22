@@ -38,30 +38,24 @@ define(function(require, exports, module) {
 		return res;
 	}
 	var CharacterSet = Match.extend(function(type, begins, bodies, setPReg) {
-		if(setPReg === undefined) {
-			setPReg = Lexer.IGNORE;
-		};
 		Match.call(this, type, setPReg);
 		this.begins = begins;
 		this.bodies = bodies;
 	}).methods({
-		start: function(c) {
-			var res = is(c, this.begins);
-			if(res) {
+		match: function(c, code, index) {
+			if(is(c, this.begins)) {
 				this.result = c;
-			}
-			return res;
-		},
-		match: function(code, index) {
-			var lastIndex = index;
-			while(index < code.length) {
-				var res = is(code.charAt(index++), this.bodies);
-				if(!res) {
-					break;
+				var lastIndex = index;
+				while(index < code.length) {
+					var res = is(code.charAt(index++), this.bodies);
+					if(!res) {
+						break;
+					}
 				}
+				this.result += code.slice(lastIndex, index - 1);
+				return true;
 			}
-			this.result += code.slice(lastIndex, index - 1);
-			return true;
+			return false;
 		}
 	}).statics({
 		LETTER: 0,
