@@ -33,7 +33,7 @@ define(function(require, exports) {
 			tabBlank = '';
 		for(var i = 0; i < tab; i++) {
 			tabBlank += '&nbsp';
-		}console.log(lexer);
+		}
 		lexer.cache(cache != null ? cache : cacheLine);
 		var tokens = lexer.parse(code);
 		if(!lexer.finish() && tokens[tokens.length - 1].type() == Token.LINE) {
@@ -48,6 +48,9 @@ define(function(require, exports) {
 		div.innerHTML = '<p>' + syntax + ' code</p>';
 		div.appendChild(ol);
 		div.className = 'jssc';
+		if(node.parentNode.tagName.toLowerCase() == 'pre') {
+			node = node.parentNode;
+		}
 		node.parentNode.insertBefore(div, node);
 		node.style.display = 'none';
 		//根据完成度选择继续分析还是持续分析缓存
@@ -91,27 +94,27 @@ define(function(require, exports) {
 				temp.push(tabBlank);
 			}
 			else if(o.type() == Token.SIGN) {
-				temp.push(o.val());
+				temp.push(escapeHtml(o.val()));
 			}
 			else {
 				if(o.val().indexOf('\n') == -1) {
-					temp.push('<span class="' + Token.type(o.type()).toLowerCase() + '">' + o.val().replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>');
+					temp.push('<span class="' + Token.type(o.type()).toLowerCase() + '">' + escapeHtml(o.val()).replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>');
 				}
 				else {
 					var arr = o.val().split('\n'),
 						len = arr.length;
 					arr.forEach(function(s, i) {
 						if(i == 0) {
-							temp.push('<span class="' + Token.type(o.type()).toLowerCase() + '">' + s.replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>');
+							temp.push('<span class="' + Token.type(o.type()).toLowerCase() + '">' + escapeHtml(s).replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>');
 							li.innerHTML = temp.join('');
 							df.appendChild(li);
 						}
 						else if(i == len - 1) {
 							temp = [];
-							temp.push('<span class="' + Token.type(o.type()).toLowerCase() + '">' + s.replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>');
+							temp.push('<span class="' + Token.type(o.type()).toLowerCase() + '">' + escapeHtml(s).replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>');
 						}
 						else {
-							li.innerHTML = '<span class="' + Token.type(o.type()).toLowerCase() + '">' + s.replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>';
+							li.innerHTML = '<span class="' + Token.type(o.type()).toLowerCase() + '">' + escapeHtml(s).replace(/\t/g, tabBlank).replace(/ /g, '&nbsp;') + '</span>';
 							df.appendChild(li);
 						}
 						li = document.createElement('li');
@@ -125,6 +128,17 @@ define(function(require, exports) {
 		li.innerHTML = temp.join('');
 		df.appendChild(li);
 		return df;
+	}
+	function escapeHtml(str) {
+		str = str || '';
+		var xmlchar = {
+			"&": "&amp;",
+			"<": "&lt;",
+			">": "&gt;"
+		};
+		return str.replace(/[<>&]/g, function($1){
+			return xmlchar[$1];
+		})
 	}
 
 	exports.exec = function(tagName, className) {
