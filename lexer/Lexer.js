@@ -90,10 +90,10 @@ define(function(require, exports, module) {
 								this.totalLine += n;
 								if(n) {
 									var i = match.content().lastIndexOf('\n');
-									this.col = match.content().length - i - 1;
+									this.col = match.content().length - i;
 								}
 								else {
-									this.col += matchLen - 1;
+									this.col += matchLen;
 								}
 								if(error) {
 									this.error(error, this.code.slice(this.index - matchLen, this.index));
@@ -193,6 +193,9 @@ define(function(require, exports, module) {
 					if(this.peek == '+' || this.peek == '-') {
 						this.readch();
 					}
+					if(!character.isDigit(this.peek)) {
+						this.error('SyntaxError: missing exponent', this.code.slice(lastIndex, this.index));
+					}
 					//指数后数字位
 					while(character.isDigit(this.peek)) {
 						this.readch();
@@ -233,15 +236,13 @@ define(function(require, exports, module) {
 				this.col += this.index - lastIndex;
 			},
 			dealReg: function(length) {
-				var lastIndex = this.index - 1;
+				var lastIndex = this.index - 1,
+					res = false;
 				outer:
 				do {
 					this.readch();
 					if(this.peek == character.LINE) {
-						this.error('SyntaxError: unterminated regular expression literal', this.code.slice(lastIndex, this.index - 1));
-						if(Lexer.mode() === Lexer.LOOSE) {
-							break;
-						}
+						break;
 					}
 					else if(this.peek == character.BACK_SLASH) {
 						this.index++;
@@ -249,7 +250,10 @@ define(function(require, exports, module) {
 					else if(this.peek == character.LEFT_BRACKET) {
 						do {
 							this.readch();
-							if(this.peek == character.BACK_SLASH) {
+							if(this.peek == character.LINE) {
+								break outer;
+							}
+							else if(this.peek == character.BACK_SLASH) {
 								this.index++;
 							}
 							else if(this.peek == character.RIGHT_BRACKET) {
@@ -258,15 +262,14 @@ define(function(require, exports, module) {
 						} while(this.index < length);
 					}
 					else if(this.peek == character.SLASH) {
+						res = true;
 						var hash = {};
 						do {
 							this.readch();
 							if(character.isLetter(this.peek)) {
 								if(hash[this.peek] || (this.peek != 'g' && this.peek != 'i' && this.peek != 'm')) {
 									this.error('SyntaxError: invalid regular expression flag ' + this.peek, this.code.slice(lastIndex, this.index));
-									if(Lexer.mode() === Lexer.LOOSE) {
-										break outer;
-									}
+									break outer;
 								}
 								hash[this.peek] = true;
 							}
@@ -276,6 +279,9 @@ define(function(require, exports, module) {
 						} while(this.index < length);
 					}
 				} while(this.index < length);
+				if(!res) {
+					this.error('SyntaxError: unterminated regular expression literal', this.code.slice(lastIndex, this.index - 1));
+				}
 				this.tokens.push(new Token(Token.REG, this.code.slice(lastIndex, --this.index)));
 				this.col += this.index - lastIndex;
 			},
@@ -296,10 +302,10 @@ define(function(require, exports, module) {
 					str = this.code.substr(this.index - 1, 20);
 				}
 				if(Lexer.mode() === Lexer.STRICT) {
-					throw new Error(s + ', line ' + this.line() + ' col ' + this.col + ' charcode ' + this.peek.charCodeAt(0) + ' ' + str);
+					throw new Error(s + ', line ' + this.line() + ' col ' + this.col + '\n' + str);
 				}
 				else if(Lexer.mode() === Lexer.LOOSE && window.console && window.console.warn) {
-					window.console.warn(s + ', line ' + this.line() + ' col ' + this.col + ' charcode ' + this.peek.charCodeAt(0) + '\n' + str);
+					window.console.warn(s + ', line ' + this.line() + ' col ' + this.col + '\n' + str);
 				}
 			}
 		}).statics({
