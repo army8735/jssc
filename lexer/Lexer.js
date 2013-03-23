@@ -241,10 +241,21 @@ define(function(require, exports, module) {
 						} while(this.index < length);
 					}
 					else if(this.peek == character.SLASH) {
+						var hash = {};
 						do {
 							this.readch();
-						} while(this.index < length && character.isLetter(this.peek));
-						break;
+							if(character.isLetter(this.peek)) {
+								if(hash[this.peek] || (this.peek != 'g' && this.peek != 'i' && this.peek != 'm')) {
+									this.info('SyntaxError: invalid regular expression flag ' + this.peek, this.code.slice(lastIndex, this.index));
+									if(Lexer.mode() === Lexer.LOOSE) {
+										break outer;
+									}
+								}
+							}
+							else {
+								break outer;
+							}
+						} while(this.index < length);
 					}
 				} while(this.index < length);
 				this.tokens.push(new Token(Token.REG, this.code.slice(lastIndex, --this.index)));
