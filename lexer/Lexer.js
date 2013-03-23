@@ -88,7 +88,13 @@ define(function(require, exports, module) {
 								var n = character.count(token.val(), '\n');
 								count += n;
 								this.totalLine += n;
-								this.col += matchLen - 1;
+								if(n) {
+									var i = match.content().lastIndexOf('\n');
+									this.col = match.content().length - i - 1;
+								}
+								else {
+									this.col += matchLen - 1;
+								}
 								if(error) {
 									this.error(error, this.code.slice(this.index - matchLen, this.index));
 								}
@@ -215,6 +221,9 @@ define(function(require, exports, module) {
 					if(this.peek == '+' || this.peek == '-') {
 						this.readch();
 					}
+					if(!character.isDigit(this.peek)) {
+						this.error('SyntaxError: missing exponent', this.code.slice(lastIndex, this.index));
+					}
 					//指数后数字位
 					while(character.isDigit(this.peek)) {
 						this.readch();
@@ -259,6 +268,7 @@ define(function(require, exports, module) {
 										break outer;
 									}
 								}
+								hash[this.peek] = true;
 							}
 							else {
 								break outer;
