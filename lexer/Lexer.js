@@ -13,12 +13,15 @@ define(function(require, exports, module) {
 			this.parentheseState = false; //(开始时标记之前终结符是否为if/for/while等关键字
 			this.parentheseStack = []; //圆括号深度记录当前是否为if/for/while等语句内部
 			this.cacheLine = 0; //行缓存值
-			this.totalLine = 0; //总行数
+			this.totalLine = 1; //总行数
 			this.col = 0; //列
 		}).methods({
-			parse: function(code) {
+			parse: function(code, start) {
 				if(code !== undefined) {
 					this.code = code;
+				}
+				if(start !== undefined) {
+					this.totalLine = start;
 				}
 				this.tokens = [];
 				this.scan();
@@ -74,16 +77,21 @@ define(function(require, exports, module) {
 						for(var i = 0, matches = this.rule.matches(), len = matches.length; i < len; i++) {
 							var match = matches[i];
 							if(match.match(this.peek, this.code, this.index)) {
-								var token = new Token(match.tokenType(), match.content(), match.val());
+								var token = new Token(match.tokenType(), match.content(), match.val()),
+									error = match.error(),
+									matchLen = match.content().length;
 								if(token.type() == Token.ID && this.rule.keyWords()[token.val()]) {
 									token.type(Token.KEYWORD);
 								}
 								this.tokens.push(token);
-								this.index += match.content().length - 1;
-								this.col += match.content().length - 1;
+								this.index += matchLen - 1;
 								var n = character.count(token.val(), '\n');
 								count += n;
 								this.totalLine += n;
+								this.col += matchLen - 1;
+								if(error) {
+									this.error(error, this.code.slice(this.index - matchLen, this.index));
+								}
 								//支持perl正则需判断关键字、圆括号对除号语义的影响
 								if(perlReg && match.perlReg() != Lexer.IGNORE) {
 									if(match.perlReg() == Lexer.SPECIAL) {
@@ -110,7 +118,7 @@ define(function(require, exports, module) {
 							}
 						}
 						//如果有未匹配的，说明规则不完整，加入other类型并抛出警告
-						this.info('unknow token');
+						this.error('unknow token');
 					}
 				}
 			},
@@ -221,7 +229,7 @@ define(function(require, exports, module) {
 				do {
 					this.readch();
 					if(this.peek == character.LINE) {
-						this.info('SyntaxError: unterminated regular expression literal', this.code.slice(lastIndex, this.index - 1));
+						this.error('SyntaxError: unterminated regular expression literal', this.code.slice(lastIndex, this.index - 1));
 						if(Lexer.mode() === Lexer.LOOSE) {
 							break;
 						}
@@ -246,7 +254,7 @@ define(function(require, exports, module) {
 							this.readch();
 							if(character.isLetter(this.peek)) {
 								if(hash[this.peek] || (this.peek != 'g' && this.peek != 'i' && this.peek != 'm')) {
-									this.info('SyntaxError: invalid regular expression flag ' + this.peek, this.code.slice(lastIndex, this.index));
+									this.error('SyntaxError: invalid regular expression flag ' + this.peek, this.code.slice(lastIndex, this.index));
 									if(Lexer.mode() === Lexer.LOOSE) {
 										break outer;
 									}
@@ -273,7 +281,7 @@ define(function(require, exports, module) {
 			line: function() {
 				return this.totalLine;
 			},
-			info: function(s, str) {
+			error: function(s, str) {
 				if(str === undefined) {
 					str = this.code.substr(this.index - 1, 20);
 				}

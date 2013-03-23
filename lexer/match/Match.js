@@ -23,6 +23,10 @@ define(function(require, exports, module) {
 		},
 		match: function(c, code, index) {
 			//需被实现
+			return false;
+		},
+		error: function() {
+			return false;
 		}
 	});
 });

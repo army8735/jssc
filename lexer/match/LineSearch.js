@@ -1,6 +1,7 @@
 define(function(require, exports, module) {
 	var Match = require('./Match'),
 		Lexer = require('../Lexer'),
+		Token = require('../Token'),
 		character = require('../../util/character');
 	var LineSearch = Match.extend(function(type, begin, end, contain, setPReg) {
 		if(contain === undefined) {
@@ -10,24 +11,28 @@ define(function(require, exports, module) {
 		this.begin = begin;
 		this.end = end;
 		this.contain = contain;
+		this.msg = null;
 	}).methods({
 		match: function(c, code, index) {
-			if(this.begin == code.substr(index - 1, this.begin.length)) {
-				var res = code.substr(--index, this.begin.length) == this.begin;
-				//begin必须完全相等
-				if(res) {
-					var i = code.indexOf(this.end, index + this.begin.length);
-					if(i == -1) {
-						i = code.length;
+			this.msg = null;
+			if(this.begin == code.substr(--index, this.begin.length)) {
+				var i = code.indexOf(this.end, index + this.begin.length);
+				if(i == -1) {
+					if(this.contain) {
+						this.msg = 'SyntaxError: unterminated ' + Token.type(this.type).toLowerCase();
 					}
-					else if(this.contain) {
-						i += this.end.length;
-					}
-					this.result = code.slice(index, i);
+					i = code.length;
 				}
-				return res;
+				else if(this.contain) {
+					i += this.end.length;
+				}
+				this.result = code.slice(index, i);
+				return true;
 			}
 			return false;
+		},
+		error: function() {
+			return this.msg;
 		}
 	});
 	module.exports = LineSearch;

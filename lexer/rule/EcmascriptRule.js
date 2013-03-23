@@ -12,8 +12,8 @@ define(function(require, exports, module) {
 			
 			self.addMatch(new LineSearch(Token.COMMENT, '//', '\n'));
 			self.addMatch(new LineSearch(Token.COMMENT, '/*', '*/', true));
-			self.addMatch(new LineParse(Token.STRING, '"', '"', Lexer.IS_REG));
-			self.addMatch(new LineParse(Token.STRING, "'", "'", Lexer.IS_REG));
+			self.addMatch(new LineParse(Token.STRING, '"', '"', false, Lexer.IS_REG));
+			self.addMatch(new LineParse(Token.STRING, "'", "'", false, Lexer.IS_REG));
 			self.addMatch(new CharacterSet(Token.ID, [
 				CharacterSet.LETTER,
 				CharacterSet.UNDERLINE,

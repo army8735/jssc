@@ -47,7 +47,7 @@ define(function(require, exports) {
 			ol.appendChild(df);
 			ol.style.paddingLeft = (String(lexer.line()).length - 1) * 9 + 30 + 'px';
 		}
-		join(lexer.parse(code));
+		join(lexer.parse(code, start));
 		div.innerHTML = '<p>' + syntax + ' code</p>';
 		div.appendChild(ol);
 		div.className = 'jssc';
