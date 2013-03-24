@@ -16,6 +16,8 @@ define(function(require, exports) {
 	exports.STAR = '*';
 	exports.LEFT_PARENTHESE = '(';
 	exports.RIGHT_PARENTHESE = ')';
+	exports.COMMA = ',';
+	exports.SEMICOLON = ';';
 	exports.isDigit = function(c) {
 		return c >= '0' && c <= '9';
 	};
