@@ -38,6 +38,7 @@ define(function(require, exports, module) {
 			KEYWORD: 10,
 			ANNOT: 11,
 			HEAD: 12,
+			TEMPLATE: 13,
 			type: function(tag) {
 				if(types === undefined) {
 					types = [];

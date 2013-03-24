@@ -304,8 +304,16 @@ define(function(require, exports, module) {
 				if(Lexer.mode() === Lexer.STRICT) {
 					throw new Error(s + ', line ' + this.line() + ' col ' + this.col + '\n' + str);
 				}
-				else if(Lexer.mode() === Lexer.LOOSE && window.console && window.console.warn) {
-					window.console.warn(s + ', line ' + this.line() + ' col ' + this.col + '\n' + str);
+				else if(Lexer.mode() === Lexer.LOOSE && window.console) {
+					if(console.warn) {
+						console.warn(s + ', line ' + this.line() + ' col ' + this.col + '\n' + str);
+					}
+					else if(console.error) {
+						console.error(s + ', line ' + this.line() + ' col ' + this.col + '\n' + str);
+					}
+					else if(console.log) {
+						console.log(s + ', line ' + this.line() + ' col ' + this.col + '\n' + str);
+					}
 				}
 			}
 		}).statics({

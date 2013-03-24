@@ -11,6 +11,7 @@ define(function(require, exports, module) {
 		this.begin = begin;
 		this.end = end;
 		this.msg = null;
+		this.mutiline = mutiline;
 	}).methods({
 		match: function(c, code, index) {
 			this.msg = null;
