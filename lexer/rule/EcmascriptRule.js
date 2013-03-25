@@ -7,10 +7,15 @@ define(function(require, exports, module) {
 		RegMatch = require('../match/RegMatch'),
 		Token = require('../Token'),
 		Lexer = require('../Lexer'),
+		character = require('../../util/character'),
 		EcmascriptRule = Rule.extend(function() {
 			var self = this;
 			Rule.call(self, EcmascriptRule.KEYWORDS, true);
 			
+			self.addMatch(new CompleteEqual(Token.BLANK, character.BLANK));
+			self.addMatch(new CompleteEqual(Token.TAB, character.TAB));
+			self.addMatch(new CompleteEqual(Token.ENTER, character.ENTER));
+			self.addMatch(new CompleteEqual(Token.LINE, character.LINE));
 			self.addMatch(new LineSearch(Token.COMMENT, '//', '\n'));
 			self.addMatch(new LineSearch(Token.COMMENT, '/*', '*/', true));
 			self.addMatch(new LineParse(Token.STRING, '"', '"', false, Lexer.IS_REG));

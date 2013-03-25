@@ -34,28 +34,8 @@ define(function(require, exports, module) {
 				outer:
 				while(this.index < length) {
 					this.readch();
-					//内嵌解析空白
-					if(character.BLANK == this.peek) {
-						this.tokens.push(new Token(Token.BLANK, this.peek));
-						this.col++;
-					}
-					else if(character.TAB == this.peek) {
-						this.tokens.push(new Token(Token.TAB, this.peek));
-						this.col++;
-					}
-					//内嵌解析换行
-					else if(character.LINE == this.peek) {
-						this.totalLine++;
-						this.col = 0;
-						this.tokens.push(new Token(Token.LINE, this.peek));
-						if(this.cacheLine > 0 && ++count >= this.cacheLine) {
-							break;
-						}
-					}
-					//忽略回车
-					else if(character.ENTER == this.peek) {
-					}
-					else if(perlReg && this.isReg == Lexer.IS_REG && this.peek == character.SLASH && !{ '/': true, '*': true }[this.code.charAt(this.index)]) {
+					//perl风格正则
+					if(perlReg && this.isReg == Lexer.IS_REG && this.peek == character.SLASH && !{ '/': true, '*': true }[this.code.charAt(this.index)]) {
 						this.dealReg(length);
 						this.isReg = Lexer.NOT_REG;
 					}
@@ -72,12 +52,12 @@ define(function(require, exports, module) {
 								}
 								this.tokens.push(token);
 								this.index += matchLen - 1;
-								var n = character.count(token.val(), Token.LINE);
+								var n = character.count(token.val(), character.LINE);
 								count += n;
 								this.totalLine += n;
 								if(n) {
-									var i = match.content().lastIndexOf(Token.LINE);
-									this.col = match.content().length - i;
+									var i = match.content().lastIndexOf(character.LINE);
+									this.col = match.content().length - Math.max(1, i);
 								}
 								else {
 									this.col += matchLen;
