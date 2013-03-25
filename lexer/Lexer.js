@@ -55,19 +55,6 @@ define(function(require, exports, module) {
 					//忽略回车
 					else if(character.ENTER == this.peek) {
 					}
-					//内嵌解析数字
-					else if(character.isDigit(this.peek)) {
-						this.dealNumber();
-						if(perlReg) {
-							this.isReg = Lexer.NOT_REG;
-						}
-					}
-					else if(this.peek == character.DECIMAL && character.isDigit(this.code.charAt(this.index))) {
-						this.dealDecimal();
-						if(perlReg) {
-							this.isReg = Lexer.NOT_REG;
-						}
-					}
 					else if(perlReg && this.isReg == Lexer.IS_REG && this.peek == character.SLASH && !{ '/': true, '*': true }[this.code.charAt(this.index)]) {
 						this.dealReg(length);
 						this.isReg = Lexer.NOT_REG;
@@ -85,11 +72,11 @@ define(function(require, exports, module) {
 								}
 								this.tokens.push(token);
 								this.index += matchLen - 1;
-								var n = character.count(token.val(), '\n');
+								var n = character.count(token.val(), Token.LINE);
 								count += n;
 								this.totalLine += n;
 								if(n) {
-									var i = match.content().lastIndexOf('\n');
+									var i = match.content().lastIndexOf(Token.LINE);
 									this.col = match.content().length - i;
 								}
 								else {
@@ -131,109 +118,6 @@ define(function(require, exports, module) {
 			readch: function() {
 				this.peek = this.code.charAt(this.index++);
 				this.col++;
-			},
-			dealNumber: function() {
-				var lastIndex = this.index - 1;
-				//以0开头需判断是否2、16进制
-				if(this.peek == '0') {
-					this.readch();
-					//0后面是x或者X为16进制
-					if(this.peek.toUpperCase() == 'X') {
-						do {
-							this.readch();
-						} while(character.isDigit16(this.peek) || this.peek == character.DECIMAL);
-						if(this.peek.toUpperCase() == 'H') {
-							this.readch();
-						}
-						this.tokens.push(new Token(Token.NUMBER, this.code.slice(lastIndex, --this.index)));
-					}
-					//0后面是b或者B是2进制
-					else if(this.peek.toUpperCase() == 'B') {
-						do {
-							this.readch();
-						} while(character.isDigit2(this.peek) || this.peek == character.DECIMAL);
-						this.tokens.push(new Token(Token.NUMBER, this.code.slice(lastIndex, --this.index)));
-					}
-					//或者8进制
-					else if(character.isDigit8(this.peek)){
-						do {
-							this.readch();
-						} while(character.isDigit8(this.peek) || this.peek == character.DECIMAL);
-						this.tokens.push(new Token(Token.NUMBER, this.code.slice(lastIndex, --this.index)));
-					}
-					//小数
-					else if(this.peek == character.DECIMAL) {
-						this.dealDecimal(lastIndex);
-					}
-					//就是个0
-					else {
-						this.tokens.push(new Token(Token.NUMBER, '0'));
-						this.index--;
-					}
-					return;
-				}
-				//先处理整数部分
-				do {
-					this.readch();
-				} while(character.isDigit(this.peek) || this.peek == '_');
-				//整数后可能跟的类型L字母
-				if(this.peek.toUpperCase() == 'L') {
-					this.tokens.push(new Token(Token.NUMBER, this.code.slice(lastIndex, this.index)));
-					return;
-				}
-				//可能小数部分
-				if(this.peek == character.DECIMAL) {
-					this.dealDecimal(lastIndex);
-					return;
-				}
-				//指数部分
-				if(this.peek.toUpperCase() == 'E') {
-					this.readch();
-					//+-号
-					if(this.peek == '+' || this.peek == '-') {
-						this.readch();
-					}
-					if(!character.isDigit(this.peek)) {
-						this.error('SyntaxError: missing exponent', this.code.slice(lastIndex, this.index));
-					}
-					//指数后数字位
-					while(character.isDigit(this.peek)) {
-						this.readch();
-					}
-				}
-				this.tokens.push(new Token(Token.NUMBER, this.code.slice(lastIndex, --this.index)));
-				this.col += this.index - lastIndex;
-			},
-			dealDecimal: function(last) {
-				var lastIndex = this.index - 1;
-				if(last !== undefined) {
-					lastIndex = last;
-				}
-				do {
-					this.readch();
-				} while(character.isDigit(this.peek));
-				//小数后可能跟的类型字母D、F
-				if(this.peek.toUpperCase() == 'D' || this.peek.toUpperCase() == 'F') {
-					this.tokens.push(new Token(Token.NUMBER, this.code.slice(lastIndex, this.index)));
-					return;
-				}
-				//指数部分
-				if(this.peek.toUpperCase() == 'E') {
-					this.readch();
-					//+-号
-					if(this.peek == '+' || this.peek == '-') {
-						this.readch();
-					}
-					if(!character.isDigit(this.peek)) {
-						this.error('SyntaxError: missing exponent', this.code.slice(lastIndex, this.index));
-					}
-					//指数后数字位
-					while(character.isDigit(this.peek)) {
-						this.readch();
-					}
-				}
-				this.tokens.push(new Token(Token.NUMBER, this.code.slice(lastIndex, --this.index)));
-				this.col += this.index - lastIndex;
 			},
 			dealReg: function(length) {
 				var lastIndex = this.index - 1,
