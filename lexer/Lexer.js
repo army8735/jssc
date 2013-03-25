@@ -33,6 +33,9 @@ define(function(require, exports, module) {
 					count = 0;
 				outer:
 				while(this.index < length) {
+					if(this.cacheLine > 0 && count >= this.cacheLine) {
+						break;
+					}
 					this.readch();
 					//perl风格正则
 					if(perlReg && this.isReg == Lexer.IS_REG && this.peek == character.SLASH && !{ '/': true, '*': true }[this.code.charAt(this.index)]) {
