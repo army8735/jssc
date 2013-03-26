@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 			this.index = 0; //向前看字符字符索引
 			this.isReg = Lexer.IS_REG; //当前/是否是perl风格正则表达式
 			this.lanDepth = 0; //生成最终结果时需要记录的行深度
-			this.tokens = null; //结果的token列表
+			this.tokenList = []; //结果的token列表
 			this.parentheseState = false; //(开始时标记之前终结符是否为if/for/while等关键字
 			this.parentheseStack = []; //圆括号深度记录当前是否为if/for/while等语句内部
 			this.cacheLine = 0; //行缓存值
@@ -23,11 +23,14 @@ define(function(require, exports, module) {
 				if(!character.isUndefined(start)) {
 					this.totalLine = start;
 				}
-				this.tokens = [];
-				this.scan();
-				return this.tokens;
+				var temp = [];
+				this.scan(temp);
+				return temp;
 			},
-			scan: function() {
+			tokens: function() {
+				return this.tokenList();
+			},
+			scan: function(temp) {
 				var perlReg = this.rule.perlReg(),
 					length = this.code.length,
 					count = 0;
@@ -39,7 +42,7 @@ define(function(require, exports, module) {
 					this.readch();
 					//perl风格正则
 					if(perlReg && this.isReg == Lexer.IS_REG && this.peek == character.SLASH && !{ '/': true, '*': true }[this.code.charAt(this.index)]) {
-						this.dealReg(length);
+						this.dealReg(temp, length);
 						this.isReg = Lexer.NOT_REG;
 					}
 					//依次遍历匹配规则，命中则继续
@@ -53,7 +56,8 @@ define(function(require, exports, module) {
 								if(token.type() == Token.ID && this.rule.keyWords()[token.val()]) {
 									token.type(Token.KEYWORD);
 								}
-								this.tokens.push(token);
+								temp.push(token);
+								this.tokenList.push(token);
 								this.index += matchLen - 1;
 								var n = character.count(token.val(), character.LINE);
 								count += n;
@@ -94,12 +98,13 @@ define(function(require, exports, module) {
 						this.error('unknow token');
 					}
 				}
+				return this;
 			},
 			readch: function() {
 				this.peek = this.code.charAt(this.index++);
 				this.col++;
 			},
-			dealReg: function(length) {
+			dealReg: function(temp, length) {
 				var lastIndex = this.index - 1,
 					res = false;
 				outer:
@@ -146,8 +151,11 @@ define(function(require, exports, module) {
 				if(!res) {
 					this.error('SyntaxError: unterminated regular expression literal', this.code.slice(lastIndex, this.index - 1));
 				}
-				this.tokens.push(new Token(Token.REG, this.code.slice(lastIndex, --this.index)));
+				var token = new Token(Token.REG, this.code.slice(lastIndex, --this.index));
+				temp.push(token);
+				this.tokenList.push(token);
 				this.col += this.index - lastIndex;
+				return this;
 			},
 			cache: function(i) {
 				if(!character.isUndefined(i) && i !== null) {
@@ -179,6 +187,7 @@ define(function(require, exports, module) {
 						console.log(s + ', line ' + this.line() + ' col ' + this.col + '\n' + str);
 					}
 				}
+				return this;
 			}
 		}).statics({
 			IGNORE: 0,
