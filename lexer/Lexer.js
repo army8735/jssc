@@ -17,10 +17,10 @@ define(function(require, exports, module) {
 			this.col = 0; //ап
 		}).methods({
 			parse: function(code, start) {
-				if(code !== undefined) {
+				if(!character.isUndefined(code)) {
 					this.code = code;
 				}
-				if(start !== undefined) {
+				if(!character.isUndefined(start)) {
 					this.totalLine = start;
 				}
 				this.tokens = [];
@@ -150,7 +150,7 @@ define(function(require, exports, module) {
 				this.col += this.index - lastIndex;
 			},
 			cache: function(i) {
-				if(i !== undefined && i !== null) {
+				if(!character.isUndefined(i) && i !== null) {
 					this.cacheLine = i;
 				}
 				return this.cacheLine;
@@ -162,7 +162,7 @@ define(function(require, exports, module) {
 				return this.totalLine;
 			},
 			error: function(s, str) {
-				if(str === undefined) {
+				if(character.isUndefined(str)) {
 					str = this.code.substr(this.index - 1, 20);
 				}
 				if(Lexer.mode() === Lexer.STRICT) {
@@ -188,7 +188,7 @@ define(function(require, exports, module) {
 			STRICT: 0,
 			LOOSE: 1,
 			mode: function(i) {
-				if(i !== undefined) {
+				if(!character.isUndefined(i)) {
 					cmode = i;
 				}
 				return cmode;
