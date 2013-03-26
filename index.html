@@ -45,6 +45,7 @@ body{font:12px/1.25 arail;background-color:#fff;line-height:1.25;}
 0xFF33
 a.b;
 /\d/.test(1);
+parseInt(1.2)/1/1
 if(true)/x/ * 3
 if(true) { /x/ * 3 }
 if(true) { 3 /x/ 1 }
@@ -96,7 +97,7 @@ function f(test) {
         // Convert the template into pure JavaScript
         str
           .replace(/[\r\t\n]/g, " ")
-          .split("<%").join("\t")
+          .split("&lt;%").join("\t")
           .replace(/((^|%>)[^\t]*)'/g, "$1\r")
           .replace(/\t=(.*?)%>/g, "',$1,'")
           .split("\t").join("');")

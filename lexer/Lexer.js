@@ -71,15 +71,12 @@ define(function(require, exports, module) {
 								//支持perl正则需判断关键字、圆括号对除号语义的影响
 								if(perlReg && match.perlReg() != Lexer.IGNORE) {
 									if(match.perlReg() == Lexer.SPECIAL) {
-										this.isReg = !!this.rule.keyWords()[match.content()];
+										this.isReg = match.special();
 									}
 									else {
 										this.isReg = match.perlReg();
 									}
-									if(match.tokenType() == Token.ID) {
-										this.parentheseState = !!this.rule.keyWords()[match.content()];
-									}
-									else if(this.peek == character.LEFT_PARENTHESE) {
+									if(this.peek == character.LEFT_PARENTHESE) {
 										this.parentheseStack.push(this.parentheseState);
 										this.parentheseState = false;
 									}
@@ -87,7 +84,7 @@ define(function(require, exports, module) {
 										this.isReg = this.parentheseStack.pop() ? Lexer.IS_REG : Lexer.NOT_REG;
 									}
 									else {
-										this.parentheseState = false;
+										this.parentheseState = match.parenthese();
 									}
 								}
 								continue outer;
