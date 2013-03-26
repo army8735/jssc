@@ -60,7 +60,7 @@ define(function(require, exports) {
 		function parseNext() {
 			if(lexer.finish()) {
 				setTimeout(function() {
-					//parse(nodes);
+					parse(nodes);
 				}, cacheTime);
 			}
 			else {
