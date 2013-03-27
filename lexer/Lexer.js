@@ -28,7 +28,7 @@ define(function(require, exports, module) {
 				return temp;
 			},
 			tokens: function() {
-				return this.tokenList();
+				return this.tokenList;
 			},
 			scan: function(temp) {
 				var perlReg = this.rule.perlReg(),
