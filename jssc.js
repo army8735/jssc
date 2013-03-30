@@ -45,9 +45,22 @@ define(function(require, exports) {
 			//列数重新计算
 			if(lexer.col() > lastCol) {
 				lastCol = lexer.col();
-				var s = [];
-				for(var i = 1; i < lastCol; i++) {
-					s.push(i % 10);
+				var s = [],
+					i = 1,
+					j;
+				for(; i < lastCol; i++) {
+					if(i > 9) {
+						var j = i % 10;
+						if(j == 0) {
+							s.push('<em>' + j + '<small>' + i + '</small></em>');
+						}
+						else {
+							s.push(j);
+						}
+					}
+					else {
+						s.push(i);
+					}
 				}
 				col.innerHTML = s.join('');
 			}
