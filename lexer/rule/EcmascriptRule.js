@@ -22,7 +22,7 @@ define(function(require, exports, module) {
 			self.addMatch(new LineParse(Token.STRING, "'", "'", false, Lexer.IS_REG));
 			self.addMatch(new LineParse(Token.TEMPLATE, '`', '`', true, Lexer.IS_REG));
 
-			self.addMatch(new RegMatch(Token.ID, /^[$\w][$\d\w]*/, Lexer.SPECIAL, function() {
+			self.addMatch(new RegMatch(Token.ID, /^[$a-zA-Z_][$\w]*/, Lexer.SPECIAL, function() {
 				return !!(self.keyWords().hasOwnProperty(this.content()));
 			}, function() {
 				return ['if', 'for', 'while'].indexOf(this.content()) != -1;
