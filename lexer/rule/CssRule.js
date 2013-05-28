@@ -34,6 +34,7 @@ define(function(require, exports, module) {
 			['{', '}', ',', ';', ':', '-', '\\'].forEach(function(o) {
 				self.addMatch(new CompleteEqual(Token.SIGN, o));
 			});
+			self.addMatch(new CompleteEqual(Token.HEAD, '@import'));
 
 			self.addMatch(new RegMatch(Token.NUMBER, /^#[\da-f]{6}/i));
 			self.addMatch(new RegMatch(Token.NUMBER, /^#[\da-f]{3}/i));

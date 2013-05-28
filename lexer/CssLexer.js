@@ -5,6 +5,7 @@ define(function(require, exports, module) {
 		CssLexer = Lexer.extend(function(rule) {
 			Lexer.call(this, rule);
 			this.depth = 0;
+			this.isValue = false;
 		}).methods({
 			//@override
 			scan: function(temp) {
@@ -23,12 +24,14 @@ define(function(require, exports, module) {
 								error = match.error(),
 								matchLen = match.content().length;
 							if(token.type() == Token.ID) {
+								//ie hack也算关键字
 								if(/[*-_]/.test(token.content().charAt(0))) {
 									if(this.rule.keyWords().hasOwnProperty(token.content().slice(1))) {
 										token.type(Token.KEYWORD);
 									}
 								}
 								else {
+									//分属性和值
 									if(this.rule.keyWords().hasOwnProperty(token.content())) {
 										token.type(Token.KEYWORD);
 									}
@@ -37,22 +40,28 @@ define(function(require, exports, module) {
 									}
 								}
 							}
-							if(token.type() == Token.ID && this.depth > 0) {
-								break;
+							if(token.type() == Token.HEAD && token.content() == '@import') {
+								this.isValue = true;
 							}
-							else if((token.type() == Token.KEYWORD || token.type() == Token.PROPERTY) && this.depth < 1) {
-								break;
-							}
-							if(token.type() == Token.NUMBER && this.depth < 1) {
-								token.type(Token.ID);
-							}
-							if(token.type() == Token.SIGN) {
+							else if(token.type() == Token.SIGN) {
+								if(token.content() == ':') {
+									this.isValue = true;
+								}
+								else if(token.content() == ';' || token.content == '}') {
+									this.isValue = false;
+								}
 								if(token.content() == '{') {
 									this.depth++;
 								}
 								else if(token.content() == '}') {
 									this.depth--;
 								}
+							}
+							if(token.type() == Token.PROPERTY && !this.isValue) {
+								break;
+							}
+							if(token.type() == Token.NUMBER && !this.isValue) {
+								token.type(Token.ID);
 							}
 							temp.push(token);
 							this.tokenList.push(token);
