@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="gbk"/>
+<title>jssc6</title>
+<style>
+body{font:12px/1.25 arail;background-color:#fff;line-height:1.25;}
+
+.jssc .col{margin-left:12px;color:#CCC;cursor:default;}
+.jssc .col em{position:relative;font-style:normal;}
+.jssc .col em small{position:absolute;top:-10px;left:0;color:#A0A080;}
+.jssc .col,.jssc ol{font-family:Consolas,momospace,"宋体","Courier New";font-size:12px;}
+.jssc li:hover{background:#FF9;}
+.jssc .number{color:#088;}
+.jssc .keyword{color:#33f;}
+.jssc .comment{color:#393;}
+.jssc .string{color:#a33;}
+.jssc .template{color:#993;}
+.jssc .reg, .jssc .annot, .jssc .head, .jssc .declare{color:#999;}
+.jssc .annot{font-style:italic;}
+.jssc .attr{color:#909;}
+.jssc .property{color:#F33;}
+.jssc .tags, .jssc .cdata{color:#c96;}
+.jssc .namespace{color:#f00;}
+.jssc .depth{color:#fc0;}
+.jssc .java .keyword{color:#909;}
+
+.jssc{position:relative;}
+.jssc p{margin:10px 0;color:#79a;text-indent:2em;font-weight:700;font-family:"Verdana","\5b8b\4f53";}
+.jssc .error{color:#f33;}
+.jssc .copy{display:block;position:absolute;top:0;right:0;cursor:pointer;color:#39f;}
+.jssc ol{margin:0;padding:0;overflow:auto;border:1px solid #ccc;background-color:#eee;clear:both;}
+.jssc ol li{margin:0;padding-left:10px;border-left:1px solid #abc;background-color:#fff;color:#333;word-wrap:break-word;word-break:break-all;}
+.jssc ol li:hover{background-color:#ff9;}
+.jssc ol li.even{background-color:#eee;}
+.jssc ol li .error{background-color:#f33;}
+.jssc ol .fold{background:#eee;font-style:italic;}
+.jssc ol .fold:after{content:"...";}
+.jssc ol .hide{position:absolute;visibility:hidden;}
+</style>
+</head>
+<body>
+<pre>
+<code class="brush: css; start: 10; max-height: 400; cache: 0">/**
+ * @modified $Author: lxhao $
+ * @version $Rev: 30040 $
+ */
+.gbtn {
+  position: fixed;
+  right: 0;
+  width: 38px;
+  z-index: 10009;
+  -position: absolute;
+}
+#fff{}
+.gbtn a {
+  position: relative;
+  top: 60px;
+  display: block;
+  margin: 0 0 5px 0;
+  padding: 0;
+  width: 38px;
+  height: 38px;
+  background: url(/v3/dist/img/watchlater/global4_29893.png) no-repeat 0 -106px;
+  text-decoration: none;
+}
+.gbtn .help {
+  display: none;
+}
+.gbtn .help:hover {
+  background-position: -117px -106px;
+}
+.gbtn .ewm {
+  display: none;
+  background-position: -39px -106px;
+}
+.gbtn .ewm:hover {
+  background-position: -156px -106px;
+}
+.gbtn .ttop {
+  display: none;
+  background-position: -78px -106px;
+}
+.gbtn .ttop:hover {
+  background-position: -195px -106px;
+}
+.gewm {
+  display:block;
+  position: fixed;
+  bottom: 20px;
+  width: 102px;
+  height: 140px;
+  border: 1px solid #EDEDED;
+  z-index: 10009;
+  -position: absolute;
+  -bottom: auto;
+}
+.gewm .close {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: url("/v3/dist/img/watchlater/global4_29893.png") no-repeat -43px -68px;
+  overflow: hidden;
+  text-decoration: none;
+}</code>
+</pre>
+
+<script src="Ai.js"></script>
+<script>
+require('jssc', function(jssc) {
+	jssc.exec();
+});
+</script>
+</body>
+</html>
