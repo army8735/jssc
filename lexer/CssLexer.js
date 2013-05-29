@@ -4,8 +4,8 @@ define(function(require, exports, module) {
 		character = require('../util/character'),
 		CssLexer = Lexer.extend(function(rule) {
 			Lexer.call(this, rule);
-			this.depth = 0;
 			this.isValue = false;
+			this.parenthese = false;
 		}).methods({
 			//@override
 			scan: function(temp) {
@@ -21,8 +21,23 @@ define(function(require, exports, module) {
 						var match = matches[i];
 						if(match.match(this.peek, this.code, this.index)) {
 							var token = new Token(match.tokenType(), match.content(), match.val()),
-								error = match.error(),
 								matchLen = match.content().length;
+							//(之后的字符串可省略"号
+							if(this.parenthese) {
+								if([Token.BLANK, Token.TAB, Token.LINE, Token.ENTER].indexOf(token.type()) != -1) {
+									//
+								}
+								else if(token.type() == Token.STRING) {
+									//
+								}
+								else if(token.content() == ')') {
+									this.parenthese = false;
+								}
+								else {
+									this.dealPt(temp);
+									continue outer;
+								}
+							}
 							if(token.type() == Token.ID) {
 								//ie hack也算关键字
 								if(/[*-_]/.test(token.content().charAt(0))) {
@@ -35,8 +50,17 @@ define(function(require, exports, module) {
 									if(this.rule.keyWords().hasOwnProperty(token.content())) {
 										token.type(Token.KEYWORD);
 									}
-									else if(this.rule.values().hasOwnProperty(token.content())) {
-										token.type(Token.PROPERTY);
+									else {
+										var s = token.content();
+										if(/\\\d$/.test(s)) {
+											s = s.slice(0, s.length - 2);
+										}
+										else if(/!important$/.test(s)) {
+											s = s.slice(0, s.length - 10);
+										}
+										if(this.rule.values().hasOwnProperty(s)) {
+											token.type(Token.PROPERTY);
+										}
 									}
 								}
 							}
@@ -50,11 +74,8 @@ define(function(require, exports, module) {
 								else if(token.content() == ';' || token.content == '}') {
 									this.isValue = false;
 								}
-								if(token.content() == '{') {
-									this.depth++;
-								}
-								else if(token.content() == '}') {
-									this.depth--;
+								else if(token.content() == '(') {
+									this.parenthese = true;
 								}
 							}
 							if(token.type() == Token.PROPERTY && !this.isValue) {
@@ -79,11 +100,12 @@ define(function(require, exports, module) {
 								this.colNum += matchLen;
 							}
 							this.colMax = Math.max(this.colMax, this.colNum);
-							if(error) {
-								this.error(error, this.code.slice(this.index - matchLen, this.index));
-							}
 							continue outer;
 						}
+					}
+					if(this.parenthese) {
+						this.dealPt(temp);
+						continue outer;
 					}
 					//如果有未匹配的，css默认忽略，查找下一个;
 					var j = this.code.indexOf(';', this.index);
@@ -97,6 +119,25 @@ define(function(require, exports, module) {
 					this.index = j;
 				}
 				return this;
+			},
+			dealPt: function(temp) {
+				var k = this.code.indexOf(')', this.index);
+				//()未结束直接跳出
+				if(k == -1) {
+					this.index = this.code.length;
+					return;
+				}
+				var s = this.code.slice(this.index - 1, k),
+					reg = /[\s\r\n]+\)$/.exec(s);
+				//)之前的空白要判断
+				if(reg) {
+					s = s.slice(0, s.length - reg[0].length);
+				}
+				var token = new Token(Token.STRING, s);
+				temp.push(token);
+				this.tokenList.push(token);
+				this.index += s.length - 1;
+				this.parenthese = false;
 			}
 		});
 	module.exports = CssLexer;
