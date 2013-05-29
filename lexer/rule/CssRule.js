@@ -21,7 +21,6 @@ define(function(require, exports, module) {
 			self.addMatch(new CompleteEqual(Token.LINE, character.LINE));
 
 			self.addMatch(new LineSearch(Token.COMMENT, '/*', '*/', true));
-			//self.addMatch(new LineSearch(Token.STRING, '(', ')', true));
 			self.addMatch(new LineParse(Token.STRING, '"', '"', false));
 			self.addMatch(new LineParse(Token.STRING, "'", "'", false));
 			
@@ -30,7 +29,6 @@ define(function(require, exports, module) {
 			self.addMatch(new RegMatch(Token.ID, /^[a-z_\-*][\w\-_]+(?:(?:\\\d)|(?:!important))?/i));
 
 			self.addMatch(new RegMatch(Token.NUMBER, /^\.\d+[a-z%]*/i));
-
 
 			['{', '}', ',', ';', ':', '-', '(', ')'].forEach(function(o) {
 				self.addMatch(new CompleteEqual(Token.SIGN, o));
