@@ -26,7 +26,8 @@ define(function(require, exports, module) {
 			
 			self.addMatch(new RegMatch(Token.NUMBER, /^-\d+\.?\d*[a-z%]*/i));
 
-			self.addMatch(new RegMatch(Token.ID, /^[a-z_\-*][\w\-_]+(?:(?:\\\d)|(?:!important))?/i));
+			self.addMatch(new RegMatch(Token.ID, /^[a-z_\-*][\w\-_]+(?:\\\d)?/i));
+			self.addMatch(new CompleteEqual(Token.PROPERTY, '!important'));
 
 			self.addMatch(new RegMatch(Token.NUMBER, /^\.\d+[a-z%]*/i));
 
