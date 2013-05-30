@@ -30,16 +30,16 @@ define(function(require, exports, module) {
 
 			self.addMatch(new RegMatch(Token.NUMBER, /^\.\d+[a-z%]*/i));
 
-			['{', '}', ',', ';', ':', '-', '(', ')', '~', '>'].forEach(function(o) {
+			['{', '}', ',', ';', ':', '-', '(', ')', '~', '>', '+', '/', '[', ']', '$=', '|=', '*=', '~=', '^=', '='].forEach(function(o) {
 				self.addMatch(new CompleteEqual(Token.SIGN, o));
 			});
-			self.addMatch(new CompleteEqual(Token.HEAD, '@import'));
+			self.addMatch(new RegMatch(Token.HEAD, /^@\w+/));
 
 			self.addMatch(new RegMatch(Token.NUMBER, /^#[\da-f]{6}/i));
 			self.addMatch(new RegMatch(Token.NUMBER, /^#[\da-f]{3}/i));
 			self.addMatch(new RegMatch(Token.NUMBER, /^\d+\.?\d*[a-z%]*/i));
 			
-			self.addMatch(new RegMatch(Token.ID, /^[.#]?[a-z_][\w\-_]*/i));
+			self.addMatch(new RegMatch(Token.ID, /^[.#]?[a-z_][\w\-_.#]*/i));
 		}).methods({
 			values: function() {
 				return this.vl;

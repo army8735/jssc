@@ -64,7 +64,7 @@ define(function(require, exports, module) {
 									}
 								}
 							}
-							if(token.type() == Token.HEAD && token.content() == '@import') {
+							if(token.type() == Token.HEAD) {
 								this.isValue = true;
 							}
 							else if(token.type() == Token.SIGN) {
