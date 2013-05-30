@@ -64,7 +64,7 @@ define(function(require, exports, module) {
 									}
 								}
 							}
-							if(token.type() == Token.HEAD) {
+							if(token.type() == Token.HEAD && ['@import', '@media'].indexOf(token.content()) != -1) {
 								this.isValue = true;
 							}
 							else if(token.type() == Token.SIGN) {
