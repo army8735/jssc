@@ -113,7 +113,7 @@ define(function(require, exports, module) {
 						j = this.code.length;
 					}
 					var s = this.code.slice(this.index - 1, j);
-					var token = new Token(Token.VIRTUAL, s);
+					var token = new Token(Token.IGNORE, s);
 					temp.push(token);
 					this.tokenList.push(token);
 					this.index = j;
@@ -124,6 +124,9 @@ define(function(require, exports, module) {
 				var k = this.code.indexOf(')', this.index);
 				//()未结束直接跳出
 				if(k == -1) {
+					var token = new Token(Token.IGNORE, this.code.slice(this.index - 1, this.code.length));
+					temp.push(token);
+					this.tokenList.push(token);
 					this.index = this.code.length;
 					return;
 				}
