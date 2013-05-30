@@ -6,7 +6,6 @@ define(function(require, exports, module) {
 			Lexer.call(this, rule);
 			this.isValue = false;
 			this.parenthese = false;
-			this.family = false;
 		}).methods({
 			//@override
 			scan: function(temp) {
@@ -59,7 +58,7 @@ define(function(require, exports, module) {
 										else if(/!important$/.test(s)) {
 											s = s.slice(0, s.length - 10);
 										}
-										if(this.rule.values().hasOwnProperty(s) || this.family) {
+										if(this.rule.values().hasOwnProperty(s)) {
 											token.type(Token.PROPERTY);
 										}
 									}
@@ -74,14 +73,10 @@ define(function(require, exports, module) {
 								}
 								else if(token.content() == ';' || token.content == '}') {
 									this.isValue = false;
-									this.family = false;
 								}
 								else if(token.content() == '(') {
 									this.parenthese = true;
 								}
-							}
-							else if(token.type() == Token.KEYWORD && ['font-family', 'font'].indexOf(token.content().toLowerCase()) != -1) {
-								this.family = true;
 							}
 							if(token.type() == Token.PROPERTY && !this.isValue) {
 								break;
