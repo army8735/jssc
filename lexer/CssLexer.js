@@ -94,10 +94,6 @@ define(function(require, exports, module) {
 									break;
 								}
 							}
-							//非值状态的字符串被忽略
-							if(token.type() == Token.STRING && !this.isValue) {
-								break;
-							}
 							if(token.content() == 'url') {
 								this.isUrl = true;
 							}
