@@ -39,6 +39,7 @@ define(function(require, exports, module) {
 									continue outer;
 								}
 							}
+							//将id区分出属性名和属性值
 							if(token.type() == Token.ID) {
 								//ie hack也算关键字
 								if(/[*\-_]/.test(token.content().charAt(0))) {
@@ -61,16 +62,11 @@ define(function(require, exports, module) {
 										}
 										if(this.rule.values().hasOwnProperty(s)) {
 											token.type(Token.PROPERTY);
-											if(s == 'url') {
-												this.isUrl = true;
-											}
-											else {
-												this.isUrl = false;
-											}
 										}
 									}
 								}
 							}
+							//@import和@media之后进入值状态
 							if(token.type() == Token.HEAD && ['@import', '@media'].indexOf(token.content()) != -1) {
 								this.isValue = true;
 							}
@@ -84,14 +80,25 @@ define(function(require, exports, module) {
 								else if(token.content() == '(' && this.isUrl) {
 									this.parenthese = true;
 								}
-								this.isUrl = false;
 							}
+							//非值状态的属性忽略
 							if(token.type() == Token.PROPERTY && !this.isValue) {
 								break;
 							}
+							//非值状态的数字被忽略或当作id
 							if(token.type() == Token.NUMBER && !this.isValue) {
-								token.type(Token.ID);
+								if(token.content().charAt(0) == '#') {
+									token.type(Token.ID);
+								}
+								else {
+									break;
+								}
 							}
+							//非值状态的字符串被忽略
+							if(token.type() == Token.STRING && !this.isValue) {
+								break;
+							}
+							this.isUrl = token.content() == 'url';
 							temp.push(token);
 							this.tokenList.push(token);
 							this.index += matchLen - 1;
