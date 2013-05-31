@@ -6,6 +6,7 @@ define(function(require, exports, module) {
 			Lexer.call(this, rule);
 			this.isValue = false;
 			this.parenthese = false;
+			this.isUrl = false;
 		}).methods({
 			//@override
 			scan: function(temp) {
@@ -60,6 +61,12 @@ define(function(require, exports, module) {
 										}
 										if(this.rule.values().hasOwnProperty(s)) {
 											token.type(Token.PROPERTY);
+											if(s == 'url') {
+												this.isUrl = true;
+											}
+											else {
+												this.isUrl = false;
+											}
 										}
 									}
 								}
@@ -71,12 +78,13 @@ define(function(require, exports, module) {
 								if(token.content() == ':') {
 									this.isValue = true;
 								}
-								else if(token.content() == ';' || token.content == '}') {
+								else if(token.content() == ';' || token.content == '}' || token.content == '{') {
 									this.isValue = false;
 								}
-								else if(token.content() == '(') {
+								else if(token.content() == '(' && this.isUrl) {
 									this.parenthese = true;
 								}
+								this.isUrl = false;
 							}
 							if(token.type() == Token.PROPERTY && !this.isValue) {
 								break;
