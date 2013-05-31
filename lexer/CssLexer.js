@@ -98,6 +98,12 @@ define(function(require, exports, module) {
 							if(token.type() == Token.STRING && !this.isValue) {
 								break;
 							}
+							if(token.content() == 'url') {
+								this.isUrl = true;
+							}
+							else if([Token.BLANK, Token.TAB, Token.ENTER, Token.LINE, Token.COMMENT].indexOf(token.type()) != -1) {
+								this.isUrl = false;
+							}
 							this.isUrl = token.content() == 'url';
 							temp.push(token);
 							this.tokenList.push(token);
