@@ -85,7 +85,7 @@ define(function(require, exports, module) {
 							if(token.type() == Token.PROPERTY && !this.isValue) {
 								break;
 							}
-							//非值状态的数字被忽略或当作id
+							//非值状态的数字被当作id
 							if(token.type() == Token.NUMBER && !this.isValue) {
 								token.type(Token.ID);
 							}
