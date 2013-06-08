@@ -86,7 +86,7 @@ define(function(require, exports, module) {
 								break;
 							}
 							//非值状态的数字被当作id
-							if(token.type() == Token.NUMBER && !this.isValue) {
+							if(token.type() == Token.NUMBER && !this.isValue && token.content().charAt(0) == '#') {
 								token.type(Token.ID);
 							}
 							if(token.content() == 'url') {
