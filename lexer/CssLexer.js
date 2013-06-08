@@ -81,9 +81,9 @@ define(function(require, exports, module) {
 									this.parenthese = true;
 								}
 							}
-							//非值状态的属性忽略
+							//非值状态的属性被当作id
 							if(token.type() == Token.PROPERTY && !this.isValue) {
-								break;
+								token.type(Token.ID);
 							}
 							//非值状态的数字被当作id
 							if(token.type() == Token.NUMBER && !this.isValue && token.content().charAt(0) == '#') {
