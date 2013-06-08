@@ -124,7 +124,7 @@ define(function(require, exports, module) {
 					if(j == -1) {
 						j = this.code.length;
 					}
-					var s = this.code.slice(this.index - 1, j);
+					var s = this.code.slice(this.index - 1, ++j);
 					var token = new Token(Token.IGNORE, s);
 					temp.push(token);
 					this.tokenList.push(token);
