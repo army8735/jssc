@@ -140,6 +140,17 @@ define(function(require, exports, module) {
 					temp.push(token);
 					this.tokenList.push(token);
 					this.index = this.code.length;
+					var n = character.count(token.val(), character.LINE);
+					if(n > 0) {
+						var i = token.content().indexOf(character.LINE),
+							j = token.content().lastIndexOf(character.LINE);
+						this.colMax = Math.max(this.colMax, this.colNum + i);
+						this.colNum = match.content().length - j;
+					}
+					else {
+						this.colNum += token.content().length;
+					}
+					this.colMax = Math.max(this.colMax, this.colNum);
 					return;
 				}
 				var s = this.code.slice(this.index - 1, k),
@@ -153,6 +164,17 @@ define(function(require, exports, module) {
 				this.tokenList.push(token);
 				this.index += s.length - 1;
 				this.parenthese = false;
+				var n = character.count(token.val(), character.LINE);
+				if(n > 0) {
+					var i = token.content().indexOf(character.LINE),
+						j = token.content().lastIndexOf(character.LINE);
+					this.colMax = Math.max(this.colMax, this.colNum + i);
+					this.colNum = match.content().length - j;
+				}
+				else {
+					this.colNum += token.content().length;
+				}
+				this.colMax = Math.max(this.colMax, this.colNum);
 			}
 		});
 	module.exports = CssLexer;
