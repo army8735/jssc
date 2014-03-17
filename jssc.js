@@ -1,7 +1,7 @@
 define(function(require, exports) {
-	var factory = require('./lexer/factory'),
+	var factory = require('./factory'),
 		Token = require('./lexer/Token'),
-		render = require('./util/render'),
+		render = require('./render'),
 		cacheLine = 0,
 		cacheTime = 0,
 		find;
@@ -94,7 +94,7 @@ define(function(require, exports) {
 				}, cacheTime);
 			}
 			else {
-				join(lexer.parse());
+				join(lexer.parseOn());
 				setTimeout(parseNext, cacheTime);
 			}
 		}
@@ -113,7 +113,7 @@ define(function(require, exports) {
 		return exports;
 	};
 	exports.time = function(i) {
-		cacheTime = i;
+		cacheTime = Math.max(1, i);
 		return exports;
 	};
 });

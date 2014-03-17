@@ -1,8 +1,8 @@
 define(function(require, exports) {
-	var Lexer = require('./Lexer'),
-		CssLexer = require('./CssLexer'),
-		EcmascriptRule = require('./rule/EcmascriptRule'),
-		CssRule = require('./rule/CssRule');
+	var Lexer = require('./lexer/Lexer'),
+		CssLexer = require('./lexer/CssLexer'),
+		EcmascriptRule = require('./lexer/rule/EcmascriptRule'),
+		CssRule = require('./lexer/rule/CssRule');
 	exports.lexer = function(syntax) {
 		switch(syntax.toLowerCase()) {
 			case "js":

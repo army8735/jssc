@@ -1,0 +1,35 @@
+{
+  "name": "jssc",
+  "version": "6.0.0",
+  "description": "Javascript syntax color",
+  "maintainers": [
+    {
+      "name": "army8735",
+      "email": "army8735@qq.com"
+    }
+  ],
+  "dependencies": {
+    "homunculus": "0.0.7"
+  },
+  "devDependencies": {
+    "gulp": "^3.5.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/army8735/jssc.git"
+  },
+  "author": "army8735",
+  "license": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/addyosmani/es6-module-loader/blob/master/LICENSE-MIT"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/army8735/jssc/issues"
+  },
+  "homepage": "https://github.com/army8735/jssc"
+}
