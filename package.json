@@ -9,10 +9,7 @@
     }
   ],
   "dependencies": {
-    "homunculus": "0.0.7"
-  },
-  "devDependencies": {
-    "gulp": "^3.5.6"
+    "homunculus": "0.0.14"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -22,12 +19,7 @@
     "url": "https://github.com/army8735/jssc.git"
   },
   "author": "army8735",
-  "license": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/addyosmani/es6-module-loader/blob/master/LICENSE-MIT"
-    }
-  ],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/army8735/jssc/issues"
   },
