@@ -9,7 +9,7 @@
     }
   ],
   "dependencies": {
-    "homunculus": "0.1.3"
+    "homunculus": "0.1.7"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/army8735/jssc/issues"
   },
-  "homepage": "https://github.com/army8735/jssc"
+  "homepage": "https://github.com/army8735/jssc",
+  "devDependencies": {
+    "gulp": "^3.6.0"
+  }
 }

@@ -6,11 +6,21 @@ define(function(require, exports, module) {
     this.rule = rule; //当前语法规则
     this.init();
   }).methods({
-    parse: function(code, start) {
+    init: function() {
+      this.code = ''; //要解析的代码
+      this.peek = ''; //向前看字符
+      this.index = 0; //向前看字符字符索引
+      this.isReg = Lexer.IS_REG; //当前/是否是perl风格正则表达式
+      this.tokenList = []; //结果的token列表
+      this.parentheseState = false; //(开始时标记之前终结符是否为if/for/while等关键字
+      this.parentheseStack = []; //圆括号深度记录当前是否为if/for/while等语句内部
+      this.cacheLine = 0; //行缓存值
+      this.totalLine = 1; //总行数
+      this.colNum = 0; //列
+      this.colMax = 0; //最大列数
+    },
+    parse: function(code) {
       this.code = code || '';
-      if(!character.isUndefined(start)) {
-        this.totalLine = start;
-      }
       var temp = [];
       this.scan(temp);
       return temp;
@@ -43,9 +53,9 @@ define(function(require, exports, module) {
           for(var i = 0, matches = this.rule.matches(), len = matches.length; i < len; i++) {
             var match = matches[i];
             if(match.match(this.peek, this.code, this.index)) {
-              var token = new Token(match.tokenType(), match.content(), match.val()),
-                error = match.error(),
-                matchLen = match.content().length;
+              var token = new Token(match.tokenType(), match.content(), match.val(), this.index - 1);
+              var error = match.error();
+              var matchLen = match.content().length;
               if(token.type() == Token.ID && this.rule.keyWords().hasOwnProperty(token.content())) {
                 token.type(Token.KEYWORD);
               }
@@ -56,10 +66,10 @@ define(function(require, exports, module) {
               count += n;
               this.totalLine += n;
               if(n) {
-                var i = match.content().indexOf(character.LINE),
-                  j = match.content().lastIndexOf(character.LINE);
-                this.colMax = Math.max(this.colMax, this.colNum + i);
-                this.colNum = match.content().length - j;
+                var j = match.content().indexOf(character.LINE);
+                var k = match.content().lastIndexOf(character.LINE);
+                this.colMax = Math.max(this.colMax, this.colNum + j);
+                this.colNum = match.content().length - k;
               }
               else {
                 this.colNum += matchLen;
@@ -106,6 +116,7 @@ define(function(require, exports, module) {
       do {
         this.readch();
         if(this.peek == character.LINE) {
+          this.error('SyntaxError: unterminated regular expression literal ' + this.peek, this.code.slice(lastIndex, this.index));
           break;
         }
         else if(this.peek == character.BACK_SLASH) {
@@ -115,6 +126,7 @@ define(function(require, exports, module) {
           do {
             this.readch();
             if(this.peek == character.LINE) {
+              this.error('SyntaxError: unterminated regular expression literal ' + this.peek, this.code.slice(lastIndex, this.index));
               break outer;
             }
             else if(this.peek == character.BACK_SLASH) {
@@ -153,7 +165,7 @@ define(function(require, exports, module) {
       if(!res) {
         this.error('SyntaxError: unterminated regular expression literal', this.code.slice(lastIndex, this.index - 1));
       }
-      var token = new Token(Token.REG, this.code.slice(lastIndex, --this.index));
+      var token = new Token(Token.REG, this.code.slice(lastIndex, --this.index), lastIndex);
       temp.push(token);
       this.tokenList.push(token);
       this.colNum += this.index - lastIndex;
@@ -182,31 +194,12 @@ define(function(require, exports, module) {
       if(Lexer.mode() === Lexer.STRICT) {
         throw new Error(s + ', line ' + this.line() + ' col ' + this.colNum + '\n' + str);
       }
-      else if(Lexer.mode() === Lexer.LOOSE && window.console) {
+      else if(Lexer.mode() === Lexer.LOOSE && !character.isUndefined(console)) {
         if(console.warn) {
           console.warn(s + ', line ' + this.line() + ' col ' + this.colNum + '\n' + str);
         }
-        else if(console.error) {
-          console.error(s + ', line ' + this.line() + ' col ' + this.colNum + '\n' + str);
-        }
-        else if(console.log) {
-          console.log(s + ', line ' + this.line() + ' col ' + this.colNum + '\n' + str);
-        }
       }
       return this;
-    },
-    init: function() {
-      this.code = ''; //要解析的代码
-      this.peek = ''; //向前看字符
-      this.index = 0; //向前看字符字符索引
-      this.isReg = Lexer.IS_REG; //当前/是否是perl风格正则表达式
-      this.tokenList = []; //结果的token列表
-      this.parentheseState = false; //(开始时标记之前终结符是否为if/for/while等关键字
-      this.parentheseStack = []; //圆括号深度记录当前是否为if/for/while等语句内部
-      this.cacheLine = 0; //行缓存值
-      this.totalLine = 1; //总行数
-      this.colNum = 0; //列
-      this.colMax = 0; //最大列数
     }
   }).statics({
     IGNORE: 0,
