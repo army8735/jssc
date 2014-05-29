@@ -9,10 +9,13 @@
     }
   ],
   "dependencies": {
-    "homunculus": "0.1.7"
+    "homunculus": "0.1.11"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "spm": {
+    "main": "./jssc.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +28,9 @@
   },
   "homepage": "https://github.com/army8735/jssc",
   "devDependencies": {
-    "gulp": "^3.6.0"
+    "event-stream": "^3.1.5",
+    "gulp": "^3.6.0",
+    "gulp-clean": "^0.3.0",
+    "gulp-util": "^2.2.14"
   }
 }
