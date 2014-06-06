@@ -1,4 +1,11 @@
-define(function(require, exports, module) {
+(function(factory) {
+  if(typeof define === 'function' && (define.amd || define.cmd)) {
+    define(factory);
+  }
+  else {
+    factory(require, exports, module);
+  }
+})(function(require, exports, module) {
   var Class = require('../util/Class');
   var character = require('../util/character');
   var Token = require('./Token');
@@ -61,6 +68,10 @@ define(function(require, exports, module) {
               }
               temp.push(token);
               this.tokenList.push(token);
+              //回调可自定义处理匹配的token
+              if(match.callback) {
+                match.callback(token);
+              }
               this.index += matchLen - 1;
               var n = character.count(token.val(), character.LINE);
               count += n;
@@ -144,9 +155,10 @@ define(function(require, exports, module) {
             'g': true,
             'i': true,
             'm': true,
+            'u': true,
             'y': true
           };
-          //正则的flag中有gimy4种，大小写敏感且不能重复
+          //正则的flag中有gimuy4种，大小写敏感且不能重复
           do {
             this.readch();
             if(character.isLetter(this.peek)) {

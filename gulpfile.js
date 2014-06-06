@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var clean = require('gulp-clean');
 var util = require('gulp-util');
-var es = require('event-stream');
+var through2 = require('through2');
 
 var fs = require('fs');
 var path = require('path');
@@ -19,10 +19,10 @@ gulp.task('clean', function() {
     .pipe(clean())
 });
 gulp.task('copy', function() {
-  return gulp.src('./node_modules/homunculus/web/**/*.js')
+  return gulp.src('./node_modules/homunculus/dist/**/*.js')
     .pipe(function() {
-      return es.map(function (file, cb) {
-        var target = file.path.replace('/node_modules/homunculus/web'.replace(/\//g, path.sep), '');
+      return through2.obj(function (file, enc, cb) {
+        var target = file.path.replace((path.sep + 'node_modules' + path.sep + 'homunculus' + path.sep + 'dist').replace(/\//g, path.sep), '');
         mkdir(path.dirname(target));
         util.log(path.relative(file.cwd, file.path), '->', path.relative(file.cwd, target));
         var content = file._contents;

@@ -1,4 +1,11 @@
-define(function(require, exports, module) {
+(function(factory) {
+  if(typeof define === 'function' && (define.amd || define.cmd)) {
+    define(factory);
+  }
+  else {
+    factory(require, exports, module);
+  }
+})(function(require, exports, module) {
   exports.LINE = '\n';
   exports.ENTER = '\r';
   exports.BLANK = ' ';
