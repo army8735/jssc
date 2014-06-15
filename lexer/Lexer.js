@@ -1,11 +1,4 @@
-(function(factory) {
-  if(typeof define === 'function' && (define.amd || define.cmd)) {
-    define(factory);
-  }
-  else {
-    factory(require, exports, module);
-  }
-})(function(require, exports, module) {
+define(function(require, exports, module) {
   var Class = require('../util/Class');
   var character = require('../util/character');
   var Token = require('./Token');
@@ -51,7 +44,10 @@
         }
         this.readch();
         //perl风格正则
-        if(perlReg && this.isReg == Lexer.IS_REG && this.peek == character.SLASH && !{ '/': true, '*': true }[this.code.charAt(this.index)]) {
+        if(perlReg
+          && this.isReg == Lexer.IS_REG
+          && this.peek == character.SLASH
+          && !{ '/': true, '*': true }[this.code.charAt(this.index)]) {
           this.dealReg(temp, length);
           this.isReg = Lexer.NOT_REG;
         }
@@ -62,16 +58,22 @@
             if(match.match(this.peek, this.code, this.index)) {
               var token = new Token(match.tokenType(), match.content(), match.val(), this.index - 1);
               var error = match.error();
+              if(error) {
+                this.error(error, this.code.slice(this.index - matchLen, this.index));
+              }
               var matchLen = match.content().length;
-              if(token.type() == Token.ID && this.rule.keyWords().hasOwnProperty(token.content())) {
+              if(token.type() == Token.ID
+                && this.rule.keyWords().hasOwnProperty(token.content())) {
                 token.type(Token.KEYWORD);
               }
-              temp.push(token);
-              this.tokenList.push(token);
+  
               //回调可自定义处理匹配的token
               if(match.callback) {
                 match.callback(token);
               }
+  
+              temp.push(token);
+              this.tokenList.push(token);
               this.index += matchLen - 1;
               var n = character.count(token.val(), character.LINE);
               count += n;
@@ -86,9 +88,7 @@
                 this.colNum += matchLen;
               }
               this.colMax = Math.max(this.colMax, this.colNum);
-              if(error) {
-                this.error(error, this.code.slice(this.index - matchLen, this.index));
-              }
+  
               //支持perl正则需判断关键字、圆括号对除号语义的影响
               if(perlReg && match.perlReg() != Lexer.IGNORE) {
                 if(match.perlReg() == Lexer.SPECIAL) {
@@ -127,7 +127,8 @@
       do {
         this.readch();
         if(this.peek == character.LINE) {
-          this.error('SyntaxError: unterminated regular expression literal ' + this.peek, this.code.slice(lastIndex, this.index));
+          this.error('SyntaxError: unterminated regular expression literal '
+            + this.peek, this.code.slice(lastIndex, this.index));
           break;
         }
         else if(this.peek == character.BACK_SLASH) {
@@ -137,7 +138,8 @@
           do {
             this.readch();
             if(this.peek == character.LINE) {
-              this.error('SyntaxError: unterminated regular expression literal ' + this.peek, this.code.slice(lastIndex, this.index));
+              this.error('SyntaxError: unterminated regular expression literal '
+                + this.peek, this.code.slice(lastIndex, this.index));
               break outer;
             }
             else if(this.peek == character.BACK_SLASH) {
@@ -163,7 +165,8 @@
             this.readch();
             if(character.isLetter(this.peek)) {
               if(hash.hasOwnProperty(this.peek) || !flag.hasOwnProperty(this.peek)) {
-                this.error('SyntaxError: invalid regular expression flag ' + this.peek, this.code.slice(lastIndex, this.index));
+                this.error('SyntaxError: invalid regular expression flag '
+                  + this.peek, this.code.slice(lastIndex, this.index));
                 break outer;
               }
               hash[this.peek] = true;
@@ -175,7 +178,8 @@
         }
       } while(this.index < length);
       if(!res) {
-        this.error('SyntaxError: unterminated regular expression literal', this.code.slice(lastIndex, this.index - 1));
+        this.error('SyntaxError: unterminated regular expression literal',
+          this.code.slice(lastIndex, this.index - 1));
       }
       var token = new Token(Token.REG, this.code.slice(lastIndex, --this.index), lastIndex);
       temp.push(token);
@@ -206,10 +210,8 @@
       if(Lexer.mode() === Lexer.STRICT) {
         throw new Error(s + ', line ' + this.line() + ' col ' + this.colNum + '\n' + str);
       }
-      else if(Lexer.mode() === Lexer.LOOSE && !character.isUndefined(console)) {
-        if(console.warn) {
-          console.warn(s + ', line ' + this.line() + ' col ' + this.colNum + '\n' + str);
-        }
+      else if(Lexer.mode() === Lexer.LOOSE && typeof console !== void 0) {
+        console.warn(s + ', line ' + this.line() + ' col ' + this.colNum + '\n' + str);
       }
       return this;
     }

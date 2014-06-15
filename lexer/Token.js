@@ -1,11 +1,4 @@
-(function(factory) {
-  if(typeof define === 'function' && (define.amd || define.cmd)) {
-    define(factory);
-  }
-  else {
-    factory(require, exports, module);
-  }
-})(function(require, exports, module) {
+define(function(require, exports, module) {
   var Class = require('../util/Class');
   var character = require('../util/character');
   var tid = 0;
@@ -83,6 +76,10 @@
     VARS: 16,
     HACK: 17,
     IMPORTANT: 18,
+    PSEUDO: 19,
+    UNITS: 20,
+    SELECTOR: 21,
+    ATTR: 22,
     type: function(tag) {
       if(character.isUndefined(types)) {
         types = [];

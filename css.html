@@ -20,7 +20,12 @@ body{font:12px/1.25 arail;background-color:#fff;line-height:1.25;}
 .jssc .annot{font-style:italic;}
 .jssc .attr{color:#909;}
 .jssc .property{color:#F33;}
+.jssc .selector{font-weight:700;}
+.jssc .units{color:#9c0;}
+.jssc .important{text-decoration:underline;}
+.jssc .pseudo{font-style:italic;}
 .jssc .tags, .jssc .cdata{color:#c96;}
+.jssc .hack{color:#ccc;}
 .jssc .namespace{color:#f00;}
 .jssc .depth{color:#fc0;}
 .jssc .java .keyword{color:#909;}
@@ -45,12 +50,17 @@ body{font:12px/1.25 arail;background-color:#fff;line-height:1.25;}
  * @modified $Author: lxhao $
  * @version $Rev: 30040 $
  */
+
+*{}
+@import url("style.css") screen;
+p{background:url(xxx) no-repeat}
 @media all and (width:1024px){
 	body{color:#f00;}
 }
 
 @import url(1.css);
 @import url("2.css");
+li[class*="a"]{}
 .gbtn {
   font-family:"Verdana","\5b8b\4f53";
   font-family: Arial, songti;
@@ -68,6 +78,8 @@ body{font:12px/1.25 arail;background-color:#fff;line-height:1.25;}
 		color: #fff
 	}
 }
+div:first{}
+#id{}
 .gbtn a {
   position: relative;
   top: 60px;
@@ -123,9 +135,9 @@ body{font:12px/1.25 arail;background-color:#fff;line-height:1.25;}
 }</code>
 </pre>
 
-<script src="Ai.js"></script>
+<script src="sea.js"></script>
 <script>
-require('jssc', function(jssc) {
+seajs.use('./jssc', function(jssc) {
 	jssc.exec();
 });
 </script>

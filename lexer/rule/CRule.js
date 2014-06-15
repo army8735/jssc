@@ -1,11 +1,4 @@
-(function(factory) {
-  if(typeof define === 'function' && (define.amd || define.cmd)) {
-    define(factory);
-  }
-  else {
-    factory(require, exports, module);
-  }
-})(function(require, exports, module) {
+define(function(require, exports, module) {
   var Rule = require('./Rule');
   var LineSearch = require('../match/LineSearch');
   var RegMatch = require('../match/RegMatch');
