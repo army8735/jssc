@@ -9,7 +9,7 @@
     }
   ],
   "dependencies": {
-    "homunculus": "0.2.9"
+    "homunculus": "0.2.9-1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
