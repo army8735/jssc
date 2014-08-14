@@ -37,8 +37,6 @@ define(function(require, exports) {
        return new PythonLexer(new PythonRule());
        case "xml":
        return new XmlLexer();
-       case "css":
-       return new CssLexer(new CssRule());
        case "php":
        return new PhpLexer();
        default:
